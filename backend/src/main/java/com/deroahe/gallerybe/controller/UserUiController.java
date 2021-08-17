@@ -2,7 +2,7 @@ package com.deroahe.gallerybe.controller;
 
 import com.deroahe.gallerybe.model.User;
 import com.deroahe.gallerybe.service.EncryptionService;
-import com.deroahe.gallerybe.service.impl.UserService;
+import com.deroahe.gallerybe.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,13 +19,13 @@ import java.util.Optional;
 @Controller
 public class UserUiController {
 
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Resource
     private EncryptionService encryptionService;
 
     @Autowired
-    public UserUiController(UserService userService) {
+    public UserUiController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -62,7 +62,7 @@ public class UserUiController {
         }
 
         if (id.isPresent()) {
-            user.setId(id.get());
+            user.setId(Integer.parseInt(id.get()));
         }
 
         userService.saveUser(user);

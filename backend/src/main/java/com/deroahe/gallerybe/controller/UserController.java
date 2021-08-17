@@ -1,42 +1,30 @@
 package com.deroahe.gallerybe.controller;
 
 import com.deroahe.gallerybe.model.User;
-import com.deroahe.gallerybe.service.impl.UserService;
+import com.deroahe.gallerybe.service.impl.UserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
-    private UserService userService;
+    private UserServiceImpl userService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public Iterable<User> getAllUsers() {
+        logger.info("Get at users");
         return userService.getAllUsers();
     }
-
-
-//    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-//            "cloud_name", "do70ia20i",
-//            "api_key", "472214227375812",
-//            "api_secret", "JCtzbo3LOkTTNo4BTYNrLXr4Ku8"));
-//
-//    Map params = ObjectUtils.asMap(
-//            "public_id", "test/image1",
-//            "overwrite", true,
-//            "notification_url", "",
-//            "resource_type", "image"
-//    );
-//        try {
-//        Map uploadResult = cloudinary.uploader().upload("./src/main/resources/images/image1.jpg", params);
-//    } catch (IOException e) {
-//        e.printStackTrace();
-//    }
-//        System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
 }

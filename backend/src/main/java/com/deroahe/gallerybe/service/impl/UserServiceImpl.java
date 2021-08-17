@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserServiceImpl {
 
     private UserRepository userRepository;
 
@@ -18,7 +18,7 @@ public class UserService {
     private EncryptionService encryptionService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -2,8 +2,7 @@ package com.deroahe.gallerybe.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -15,7 +14,16 @@ import javax.persistence.Id;
 public class User {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "USER_ID")
+    private int id;
+
+    @Column(name = "USER_USERNAME")
     private String username;
+
+    @Column(name = "USER_PASSWORD")
     private String password;
+
+    @Column(name = "USER_EMAIL")
+    private String email;
 }

@@ -13,31 +13,13 @@ public class GalleryBeApplication {
 		SpringApplication.run(GalleryBeApplication.class, args);
 	}
 
-//	@Bean
-//	public CommandLineRunner setup(UserService userService) {
-//		return (args) -> {
-//			log.info("Generating sample data");
-//			userService.deleteAllUsers();
-//			List<String> users = Arrays.asList("Bob", "Peter", "Gus", "John", "David");
-//			users.forEach(user ->
-//					userService.saveUser(User.builder()
-//							.username(user)
-//							.password(LocalDateTime.now().toString())
-//							.build()) );
-//
-//			userService.getAllUsers().forEach(user ->
-//					log.info("USER --> " + user.getUsername() + " ID: " + user.getId() + " PASSWORD: " + user.getPassword()));
-//		};
-//	}
-
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+				registry.addMapping("/api/*").allowedOrigins("http://localhost:3000");
 			}
 		};
 	}
-
 }

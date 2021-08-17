@@ -22,7 +22,7 @@ public class Image {
     private String imageUrl;
 
     @Column(name = "IMAGE_UPLOADED_BY")
-    private String imageUploadedBy;
+    private int imageUploadedBy;
 
     // todo upload-date
 

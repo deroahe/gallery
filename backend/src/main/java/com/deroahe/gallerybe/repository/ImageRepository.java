@@ -9,9 +9,11 @@ import java.util.List;
 @Repository
 public interface ImageRepository extends CrudRepository<Image, String> {
 
-    Image findImageByImageId(String id);
+    Image findImageByImageId(int id);
 
     Image findImageByImageUrl(String url);
 
     List<Image> findAll();
+
+    void deleteImageByImageId(int id);
 }
