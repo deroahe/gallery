@@ -43,9 +43,9 @@ public class UserUiController {
     }
 
     @GetMapping(value = {"/edit-add-user/{id}", "/edit-add-user"})
-    public String editUser(@PathVariable("id") String id, Model model) {
+    public String editUser(@PathVariable("id") Long id, Model model) {
         User user;
-        if (!id.isEmpty()) {
+        if (id != null) {
             user = userService.findUserById(id);
             user.setPassword(encryptionService.decrypt(user.getPassword()));
         } else {
@@ -62,7 +62,7 @@ public class UserUiController {
         }
 
         if (id.isPresent()) {
-            user.setId(Integer.parseInt(id.get()));
+            user.setId(Long.parseLong(id.get()));
         }
 
         userService.saveUser(user);

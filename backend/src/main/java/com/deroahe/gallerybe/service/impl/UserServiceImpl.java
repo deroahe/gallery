@@ -39,7 +39,7 @@ public class UserServiceImpl {
         userRepository.deleteById(id);
     }
 
-    public User findUserById(String id) {
+    public User findUserById(Long id) {
         return userRepository.findUserById(id);
     }
 }

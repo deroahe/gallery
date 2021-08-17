@@ -44,7 +44,7 @@ public class ImageServiceImpl {
         );
     }
 
-    public Image save(int userId, MultipartFile file) {
+    public Image save(Long userId, MultipartFile file) {
         try {
             params.put("public_id", "test_be/" + file.getOriginalFilename());
             Path path = write(file, Paths.get("./src/main/resources"));
