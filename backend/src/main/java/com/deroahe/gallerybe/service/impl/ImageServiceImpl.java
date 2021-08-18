@@ -2,8 +2,9 @@ package com.deroahe.gallerybe.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
-import com.deroahe.gallerybe.model.UploadForm;
+import com.deroahe.gallerybe.repository.HashtagRepository;
 import com.deroahe.gallerybe.repository.ImageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +26,14 @@ import java.util.Map;
 public class ImageServiceImpl {
 
     private ImageRepository imageRepository;
+    private HashtagRepository hashtagRepository;
     private Cloudinary cloudinary;
     private Map<String, String> params;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public ImageServiceImpl(ImageRepository imageRepository) {
+    public ImageServiceImpl(ImageRepository imageRepository, HashtagRepository hashtagRepository) {
         this.imageRepository = imageRepository;
 
         cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -42,6 +44,7 @@ public class ImageServiceImpl {
         params = ObjectUtils.asMap(
                 "overwrite", true
         );
+        this.hashtagRepository = hashtagRepository;
     }
 
     public Image save(Long userId, MultipartFile file) {
@@ -54,6 +57,8 @@ public class ImageServiceImpl {
             Image image = new Image();
             image.setImageUploadedBy(userId);
             image.setImageUrl(uploadResult.get("url").toString());
+            File tempFile = new File(String.valueOf(path.toFile()));
+            tempFile.delete();
             return imageRepository.save(image);
         } catch (IOException e) {
             logger.error("Couldn't upload image to Cloudinary");
@@ -107,6 +112,54 @@ public class ImageServiceImpl {
 
     public void deleteAll() {
         imageRepository.deleteAll();
+    }
+
+    public List<Image> findImagesByHashtag(String hashtagName){
+        List<Image> existingImages = imageRepository.findAll();
+        List<Image> resultingImages = new ArrayList<>();
+
+        for(Image image : existingImages){
+            boolean found = false;
+            for(Hashtag hs : image.getHashtags()){
+                if(hs.getName().equals(hashtagName)){
+                    found = true;
+                    break;
+                }
+            }
+            if(found){
+                resultingImages.add(image);
+            }
+        }
+
+        return resultingImages;
+    }
+
+    public List<Image> findImagesByHashtagIds(List<Integer> hashtagIds){
+        List<Image> existingImages = imageRepository.findAll();
+        List<Image> resultingImages = new ArrayList<>();
+
+        List<Hashtag> hashtags = new ArrayList<>();
+        for (int id : hashtagIds) {
+            Hashtag existentHashtag = hashtagRepository.findById(id);
+            if (existentHashtag != null) {
+                hashtags.add(existentHashtag);
+            }
+        }
+
+        for(Image image : existingImages){
+            boolean found = false;
+            for(Hashtag hs : image.getHashtags()){
+                if(hashtags.contains(hs)){
+                    found = true;
+                    break;
+                }
+            }
+            if(found){
+                resultingImages.add(image);
+            }
+        }
+
+        return resultingImages;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.deroahe.gallerybe.controller;
 
+import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
 import com.deroahe.gallerybe.service.impl.ImageServiceImpl;
@@ -61,5 +62,13 @@ public class ImageController {
     public ResponseEntity<Image> deleteAll() {
         imageService.deleteAll();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/hashtags")
+    public List<Image> findAllImagesWithHashtags(@RequestBody List<Integer> hashtagIds) {
+        logger.info("ImageController: findAllImagesWithHashtags");
+        List<Image> images = imageService.findImagesByHashtagIds(hashtagIds);
+        logger.info("Image list size: " + images.size());
+        return imageService.findImagesByHashtagIds(hashtagIds);
     }
 }

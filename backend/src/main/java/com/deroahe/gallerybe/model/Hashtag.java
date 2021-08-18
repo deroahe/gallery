@@ -21,10 +21,10 @@ public class Hashtag {
     @Column(name = "HASHTAG_NAME")
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "IMAGE_HASHTAG", joinColumns = {
-            @JoinColumn(name = "HASHTAG_ID", referencedColumnName = "HASHTAG_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "IMAGE_ID", referencedColumnName = "IMAGE_ID")
-            })
+    @ManyToMany(mappedBy = "hashtags")
     private List<Image> images;
+
+    public Hashtag(String name){
+        this.name = name;
+    }
 }

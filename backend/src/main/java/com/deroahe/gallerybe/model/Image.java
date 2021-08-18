@@ -29,7 +29,11 @@ public class Image {
     @OneToMany(mappedBy = "image")
     private List<Comment> comments;
 
-    @ManyToMany(mappedBy = "images", fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "IMAGE_HASHTAG", joinColumns =
+    @JoinColumn(name = "IMAGE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "HASHTAG_ID")
+    )
     private List<Hashtag> hashtags;
 
 }
