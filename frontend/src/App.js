@@ -15,6 +15,7 @@ import BoardAdmin from "./components/BoardAdmin";
 
 // import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
+import FrontPage from "./components/FrontPage";
 
 const App = () => {
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -56,6 +57,12 @@ const App = () => {
                     <li className="nav-item">
                         <Link to={"/home"} className="nav-link">
                             Home
+                        </Link>
+                    </li>
+
+                    <li className="nav-item">
+                        <Link to={"/images"} className="nav-link">
+                            Images
                         </Link>
                     </li>
 
@@ -123,6 +130,7 @@ const App = () => {
                     <Route path="/user" component={BoardUser} />
                     <Route path="/mod" component={BoardModerator} />
                     <Route path="/admin" component={BoardAdmin} />
+                    <Route path="/images" component={FrontPage} />
                 </Switch>
             </div>
 

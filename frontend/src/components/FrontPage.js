@@ -1,28 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import ImageList from './ImageList';
-import http from '../http-common';
 import FileUpload from "./FileUpload";
+import ImageService from "../services/images.service";
 
-const FrontPage = (props) => {
+const FrontPage = () => {
 
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        http.get("api/images/urls")
+        ImageService.getAllImages()
             .then((response) => {
-                console.log("Response from get all urls", response);
-                setImages(response.data);
+                response.data
+                    .map((image) => {
+                        setImages(images => [...images, image.imageUrl]);
+                    });
             })
     }, []);
 
     const refreshFrontPage = () => {
-        http.get("api/images/urls")
+        ImageService.getAllImages()
             .then((response) => {
-                console.log("Response from get all urls in Refresh", response);
-                setImages(response.data);
-            }).catch((reason) => {
-                console.log("In catch reason: ", reason)
-        })
+                setImages([]);
+                response.data
+                    .map((image) => {
+                        setImages(images => [...images, image.imageUrl]);
+                    });
+            })
+    }
+
+    const appendNewlyUploadedImage = (imageUrl) => {
+        setImages(images => [...images, imageUrl])
     }
 
     return (
@@ -30,7 +37,7 @@ const FrontPage = (props) => {
             Images:
             <button onClick={refreshFrontPage}>Refresh</button>
             <ImageList urls={images}/>
-            <FileUpload />
+            <FileUpload appendNewlyUploadedImage={appendNewlyUploadedImage}/>
         </div>
     );
 }

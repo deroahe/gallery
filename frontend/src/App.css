@@ -43,26 +43,26 @@ label {
 /*.imageListDiv {*/
 /*}*/
 
-/*.imageDiv {*/
-/*  margin: 5px;*/
-/*  border: 1px solid #ccc;*/
-/*  float: left;*/
-/*  width: 180px;*/
-/*}*/
+.imageDiv {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 180px;
+}
 
-/*.imageDiv img {*/
-/*  width: 100%;*/
-/*  height: auto;*/
-/*}*/
+.imageDiv img {
+  width: 100%;
+  height: auto;
+}
 
-/*.hashtag {*/
-/*  padding: 15px;*/
-/*  text-align: center;*/
-/*}*/
+.hashtag {
+  padding: 15px;
+  text-align: center;
+}
 
-/*div.imageDiv:hover {*/
-/*  border: 1px solid #777;*/
-/*}*/
+div.imageDiv:hover {
+  border: 1px solid #777;
+}
 
 
 /*@media only screen and (max-width: 1024px) {*/

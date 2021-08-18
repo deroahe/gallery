@@ -1,10 +1,11 @@
 import React,{Component} from 'react';
 import http from '../http-common';
+import ImageService from '../services/images.service';
+import FrontPage from "./FrontPage";
 
 class App extends Component {
 
     state = {
-        refresh: this.props.refreshFrontPage,
         // Initially, no file is selected
         selectedFile: null
     };
@@ -44,15 +45,10 @@ class App extends Component {
         // Details of the uploaded file
         console.log(this.state.selectedFile);
 
-        // Request made to the backend api
-        // Send formData object
-        http.post("http://localhost:8080/api/images", formData)
+        ImageService.uploadImage(formData)
             .then((response) => {
-                console.log("In post file upload, response: ", response);
-                this.state.refresh()
-            }).catch((reason => {
-                console.log("In catch file upload reason: ", reason)
-        }));
+                this.props.appendNewlyUploadedImage(response.data.imageUrl);
+            })
     };
 
     // File content to be displayed after
