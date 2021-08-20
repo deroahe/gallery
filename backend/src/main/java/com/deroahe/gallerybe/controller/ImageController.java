@@ -1,6 +1,5 @@
 package com.deroahe.gallerybe.controller;
 
-import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
 import com.deroahe.gallerybe.service.impl.ImageServiceImpl;
@@ -13,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -31,8 +29,8 @@ public class ImageController {
     }
 
     @GetMapping
-    public Collection<Image> getAll() {
-        return imageService.getAll();
+    public Iterable<Image> getAll() {
+        return imageService.findAllImages();
     }
 
     @GetMapping(value = "/urls")
@@ -42,12 +40,12 @@ public class ImageController {
 
     @GetMapping("/{id}")
     public Image getById(@PathVariable int id) {
-        return imageService.getById(id);
+        return imageService.findImageById(id);
     }
 
     @PostMapping(consumes = { "multipart/form-data" })
     public ResponseEntity<Image> create(@RequestPart("file") MultipartFile multipartFile, @RequestPart("user") User user) throws URISyntaxException {
-        Image savedImage = imageService.save(user.getId(), multipartFile);
+        Image savedImage = imageService.saveAndUpload(user.getUserId(), multipartFile);
         return ResponseEntity.created(new URI("/" + savedImage.getImageId())).body(savedImage);
     }
 

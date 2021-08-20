@@ -8,15 +8,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, String> {
+public interface UserRepository extends CrudRepository<User, Integer> {
+
+    User findByUserId(int id);
+
+    Optional<User> findByUserUsername(String username);
 
     List<User> findAll();
 
-    User findUserById(Long id);
+    Boolean existsByUserUsername(String username);
 
-    Optional<User> findUserByUsername(String username);
+    Boolean existsByUserEmail(String email);
 
-    Boolean existsByUsername(String username);
-
-    Boolean existsByEmail(String email);
+    void deleteByUserId(int id);
 }

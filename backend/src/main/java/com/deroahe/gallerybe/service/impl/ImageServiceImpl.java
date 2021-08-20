@@ -6,6 +6,7 @@ import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.repository.HashtagRepository;
 import com.deroahe.gallerybe.repository.ImageRepository;
+import com.deroahe.gallerybe.util.CategoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,13 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ImageServiceImpl {
 
     private ImageRepository imageRepository;
+    private CategoryUtils categoryUtils;
     private HashtagRepository hashtagRepository;
     private Cloudinary cloudinary;
     private Map<String, String> params;
@@ -33,7 +33,7 @@ public class ImageServiceImpl {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public ImageServiceImpl(ImageRepository imageRepository, HashtagRepository hashtagRepository) {
+    public ImageServiceImpl(ImageRepository imageRepository, HashtagRepository hashtagRepository, CategoryUtils categoryUtils) {
         this.imageRepository = imageRepository;
 
         cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -45,20 +45,48 @@ public class ImageServiceImpl {
                 "overwrite", true
         );
         this.hashtagRepository = hashtagRepository;
+        this.categoryUtils = categoryUtils;
     }
 
-    public Image save(Long userId, MultipartFile file) {
+    public Image findImageById(int id) {
+        return imageRepository.findByImageId(id);
+    }
+
+    public Image findImageByUrl(String url) {
+        return imageRepository.findByImageUrl(url);
+    }
+
+    public List<Image> findAllImages() {
+        return imageRepository.findAll();
+    }
+
+    public Image saveImage(Image image) {
+        if (imageRepository.existsByImageUrl(image.getImageUrl())) {
+            logger.info("Image URL already in database");
+            return null;
+        }
+        return imageRepository.save(image);
+    }
+
+    public void saveAllImages(List<Image> images) {
+        for (Image image : images) {
+            saveImage(image);
+        }
+    }
+    public Image saveAndUpload(int userId, MultipartFile file) {
         try {
             params.put("public_id", "test_be/" + file.getOriginalFilename());
-            Path path = write(file, Paths.get("./src/main/resources"));
-            Map uploadResult = cloudinary.uploader().upload(path.toFile(), params);
+            Path path = writeToFile(file, Paths.get("./src/main/resources"));
+            Map<?,?> uploadResult = cloudinary.uploader().upload(path.toFile(), params);
             logger.info("Saved image to Cloudinary with public_id: " + uploadResult.get("public_id").toString());
 
             Image image = new Image();
-            image.setImageUploadedBy(userId);
             image.setImageUrl(uploadResult.get("url").toString());
             File tempFile = new File(String.valueOf(path.toFile()));
-            tempFile.delete();
+            boolean deleted = tempFile.delete();
+            if (!deleted) {
+                logger.info("Temporary file couldn't be deleted. Path: " + path.toString());
+            }
             return imageRepository.save(image);
         } catch (IOException e) {
             logger.error("Couldn't upload image to Cloudinary");
@@ -67,8 +95,15 @@ public class ImageServiceImpl {
             return null;
         }
     }
+    public void deleteById(int id) {
+        imageRepository.deleteByImageId(id);
+    }
 
-    public Path write(MultipartFile file, Path dir) {
+    public void deleteAll() {
+        imageRepository.deleteAll();
+    }
+
+    public Path writeToFile(MultipartFile file, Path dir) {
         Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
 
         try (OutputStream os = Files.newOutputStream(filepath)) {
@@ -80,12 +115,8 @@ public class ImageServiceImpl {
         return filepath;
     }
 
-    public List<Image> getAll() {
-        return imageRepository.findAll();
-    }
-
     public List<String> getAllUrls() {
-        List<Image> allImages = getAll();
+        List<Image> allImages = findAllImages();
         List<String> urls = new ArrayList<>();
         for (Image image : allImages) {
             if (image.getImageUrl() != null) {
@@ -98,30 +129,14 @@ public class ImageServiceImpl {
         return urls;
     }
 
-    public Image getById(int id) {
-        return imageRepository.findImageByImageId(id);
-    }
-
-    public void deleteById(int id) {
-        imageRepository.deleteImageByImageId(id);
-    }
-
-    public Image getByUrl(String url) {
-        return imageRepository.findImageByImageUrl(url);
-    }
-
-    public void deleteAll() {
-        imageRepository.deleteAll();
-    }
-
     public List<Image> findImagesByHashtag(String hashtagName){
         List<Image> existingImages = imageRepository.findAll();
         List<Image> resultingImages = new ArrayList<>();
 
         for(Image image : existingImages){
             boolean found = false;
-            for(Hashtag hs : image.getHashtags()){
-                if(hs.getName().equals(hashtagName)){
+            for(Hashtag hs : image.getImageHashtags()){
+                if(hs.getHashtagName().equals(hashtagName)){
                     found = true;
                     break;
                 }
@@ -140,7 +155,7 @@ public class ImageServiceImpl {
 
         List<Hashtag> hashtags = new ArrayList<>();
         for (int id : hashtagIds) {
-            Hashtag existentHashtag = hashtagRepository.findById(id);
+            Hashtag existentHashtag = hashtagRepository.findByHashtagId(id);
             if (existentHashtag != null) {
                 hashtags.add(existentHashtag);
             }
@@ -148,7 +163,7 @@ public class ImageServiceImpl {
 
         for(Image image : existingImages){
             boolean found = false;
-            for(Hashtag hs : image.getHashtags()){
+            for(Hashtag hs : image.getImageHashtags()){
                 if(hashtags.contains(hs)){
                     found = true;
                     break;
@@ -162,4 +177,68 @@ public class ImageServiceImpl {
         return resultingImages;
     }
 
+    public Set<Image> randomImagesWithTopHashtags(List<Hashtag> topHashtags){
+        List<Image> allImages = imageRepository.findAll();
+        List<Image> resultingImagesList = new ArrayList<>();
+        Set<Image> imagesSet = new HashSet<>();
+        for(Hashtag hashtag : topHashtags){
+            for(Image image : allImages){
+                if(image.getImageHashtags().contains(hashtag)){
+                    resultingImagesList.add(image);
+                }
+            }
+        }
+
+        Collections.shuffle(resultingImagesList);
+
+        for(Image image : resultingImagesList){
+            imagesSet.add(image);
+        }
+        return imagesSet;
+
+    }
+
+    public List<Image> returnImagesByCategory(String category){
+        List<Image> allImages = imageRepository.findAll();
+        List<Image> resultingImages = new ArrayList<>();
+        switch (category) {
+            case "Space":
+                for(Image image : allImages){
+                    List<Hashtag> imageHashtags = image.getImageHashtags();
+                    for(Hashtag hashtag : imageHashtags){
+                        if(categoryUtils.verifyHashtagInSpaceCategory(hashtag.getHashtagName())){
+                            resultingImages.add(image);
+                            break;
+                        }
+                    }
+                }
+                break;
+            case "Animals":
+                for(Image image : allImages){
+                    List<Hashtag> imageHashtags = image.getImageHashtags();
+                    for(Hashtag hashtag : imageHashtags){
+                        if(categoryUtils.verifyHashtagInAnimalsCategory(hashtag.getHashtagName())){
+                            resultingImages.add(image);
+                            break;
+                        }
+                    }
+                }
+                break;
+            case "Nature":
+                for(Image image : allImages){
+                    List<Hashtag> imageHashtags = image.getImageHashtags();
+                    for(Hashtag hashtag : imageHashtags){
+                        if(categoryUtils.verifyHashtagInNatureCategory(hashtag.getHashtagName())){
+                            resultingImages.add(image);
+                            break;
+                        }
+                    }
+                }
+                break;
+            default:
+                logger.info("This category does not exist!");
+        }
+
+        return resultingImages;
+    }
 }

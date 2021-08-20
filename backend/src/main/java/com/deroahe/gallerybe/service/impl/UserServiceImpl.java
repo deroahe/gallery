@@ -1,9 +1,12 @@
 package com.deroahe.gallerybe.service.impl;
 
+import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
 import com.deroahe.gallerybe.repository.UserRepository;
 import com.deroahe.gallerybe.service.EncryptionService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import java.util.List;
 public class UserServiceImpl {
 
     private UserRepository userRepository;
+    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Resource(name = "encryptionService")
     private EncryptionService encryptionService;
@@ -23,36 +27,54 @@ public class UserServiceImpl {
         this.userRepository = userRepository;
     }
 
+    public User findUserById(int id) {
+        return userRepository.findByUserId(id);
+    }
+
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
     public User saveUser(User user) {
-//        user.setPassword(encryptionService.encrypt(user.getPassword()));
+        if (userRepository.existsByUserUsername(user.getUserUsername())) {
+            logger.info("Username already in database");
+            return null;
+        }
+        if (userRepository.existsByUserEmail(user.getUserEmail())) {
+            logger.info("Email already in database");
+            return null;
+        }
         return userRepository.save(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public void saveAllUsers(List<User> users) {
+        for (User user : users) {
+            saveUser(user);
+        }
+    }
+
+    public void deleteUserById(int id) {
+        userRepository.deleteByUserId(id);
     }
 
     public void deleteAllUsers() {
         userRepository.deleteAll();
     }
 
-    public void deleteUserById(String id) {
-        userRepository.deleteById(id);
+    public List<Image> getAllUserImages(int id) {
+        User user = findUserById(id);
+        return user.getUserImages();
     }
 
-    public User findUserById(Long id) {
-        return userRepository.findUserById(id);
-    }
+    public User update(int id, User user) {
+        User newUser = userRepository.findByUserId(id);
 
-    public User update(Long id, User user) {
-        User newUser = userRepository.findUserById(id);
-
-        if (StringUtils.isNotEmpty(user.getUsername())) {
-            newUser.setUsername(user.getUsername());
+        if (StringUtils.isNotEmpty(user.getUserUsername())) {
+            newUser.setUserUsername(user.getUserUsername());
         }
 
-        if (StringUtils.isNotEmpty(user.getEmail())) {
-            newUser.setEmail(user.getEmail());
+        if (StringUtils.isNotEmpty(user.getUserEmail())) {
+            newUser.setUserEmail(user.getUserEmail());
         }
 
         return userRepository.save(newUser);

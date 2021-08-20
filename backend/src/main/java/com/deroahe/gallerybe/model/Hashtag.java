@@ -1,10 +1,12 @@
 package com.deroahe.gallerybe.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Table(name = "hashtags")
 @Entity
 @Builder
 @AllArgsConstructor
@@ -19,12 +21,18 @@ public class Hashtag {
     private int hashtagId;
 
     @Column(name = "HASHTAG_NAME")
-    private String name;
+    private String hashtagName;
 
-    @ManyToMany(mappedBy = "hashtags")
-    private List<Image> images;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "imageHashtags")
+    private List<Image> hashtagImages;
 
-    public Hashtag(String name){
-        this.name = name;
+    public Hashtag(String hashtagName){
+        this.hashtagName = hashtagName;
+    }
+
+    public Hashtag(int hashtagId, String hashtagName){
+        this.hashtagId = hashtagId;
+        this.hashtagName = hashtagName;
     }
 }

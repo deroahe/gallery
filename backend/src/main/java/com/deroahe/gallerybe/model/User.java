@@ -1,8 +1,10 @@
 package com.deroahe.gallerybe.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -13,8 +15,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(	name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
+                @UniqueConstraint(columnNames = "USER_EMAIL"),
+                @UniqueConstraint(columnNames = "USER_USERNAME")
         })
 @Builder
 @NoArgsConstructor
@@ -25,44 +27,59 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "USER_ID")
+    private int userId;
 
-    @NotBlank
-    @Size(max = 20)
-    private String username;
-
+    @Column(name = "USER_EMAIL")
     @NotBlank
     @Size(max = 50)
     @Email
-    private String email;
+    private String userEmail;
 
+    @Column(name = "USER_USERNAME")
+    @NotBlank
+    @Size(max = 20)
+    private String userUsername;
+
+    @Column(name = "USER_PASSWORD")
     @NotBlank
     @Size(max = 120)
-    private String password;
+    private String userPassword;
+
+    @Column(name = "USER_SUBSCRIBED")
+    private boolean userSubscriber = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(	name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    private Set<Role> userRoles = new HashSet<>();
 
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    @JsonIgnore
+    @OneToMany(mappedBy = "imageUser")
+    @Column(name = "USER_IMAGES")
+    private List<Image> userImages;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "commentUser")
+    @Column(name = "USER_COMMENTS")
+    private List<Comment> userComments;
+
+    public User(String userEmail, String userUsername, String userPassword) {
+        this.userUsername = userUsername;
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
     }
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    @Column(name = "USER_ID")
-//    private int id;
-//
-//    @Column(name = "USER_USERNAME")
-//    private String username;
-//
-//    @Column(name = "USER_PASSWORD")
-//    private String password;
-//
-//    @Column(name = "USER_EMAIL")
-//    private String email;
+    public User(String userEmail, String userUsername) {
+        this.userUsername = userUsername;
+        this.userEmail = userEmail;
+    }
+
+    public User(int userId, @NotBlank @Size(max = 50) @Email String userEmail, @NotBlank @Size(max = 20) String userUsername, @NotBlank @Size(max = 120) String userPassword) {
+        this.userId = userId;
+        this.userEmail = userEmail;
+        this.userUsername = userUsername;
+        this.userPassword = userPassword;
+    }
 }

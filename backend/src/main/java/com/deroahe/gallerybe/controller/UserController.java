@@ -1,7 +1,6 @@
 package com.deroahe.gallerybe.controller;
 
 import com.deroahe.gallerybe.model.User;
-import com.deroahe.gallerybe.payload.response.MessageResponse;
 import com.deroahe.gallerybe.service.impl.UserServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private UserServiceImpl userService;
@@ -29,11 +28,11 @@ public class UserController {
     @GetMapping
     public Iterable<User> getAllUsers() {
         logger.info("Get at users");
-        return userService.getAllUsers();
+        return userService.findAllUsers();
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
+    public User getUser(@PathVariable int id) {
         User user = userService.findUserById(id);
 
         if (user != null) {
@@ -44,24 +43,37 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity.BodyBuilder updateUser(@PathVariable("id") Long id, @RequestBody User user) {
+    public ResponseEntity.BodyBuilder updateUser(@PathVariable("id") int id, @RequestBody User user) {
         User oldUser = userService.findUserById(id);
         userService.update(id, user);
         boolean OK = true;
 
-        if (!StringUtils.equals(user.getUsername(), oldUser.getUsername())) {
+        if (!StringUtils.equals(user.getUserUsername(), oldUser.getUserUsername())) {
             OK = false;
         }
 
-        if (!StringUtils.equals(user.getEmail(), oldUser.getEmail())) {
+        if (!StringUtils.equals(user.getUserEmail(), oldUser.getUserEmail())) {
             OK = false;
         }
+
         if (OK) {
-            logger.info("ok");
-            return ResponseEntity.status(HttpStatus.OK);
+            logger.info("User not modified because fields were the same");
+//            return ResponseEntity.status(HttpStatus.NOT_MODIFIED);
         }
 
-        logger.info("Not ok");
-        return ResponseEntity.status(HttpStatus.NOT_MODIFIED);
+        logger.info("User modified successfully");
+        return ResponseEntity.status(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> removeUser(@PathVariable int id) {
+        User user = userService.findUserById(id);
+
+        if (user != null) {
+            userService.deleteUserById(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
     }
 }
