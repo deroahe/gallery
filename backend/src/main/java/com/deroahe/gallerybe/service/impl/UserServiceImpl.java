@@ -37,11 +37,11 @@ public class UserServiceImpl {
 
     public User saveUser(User user) {
         if (userRepository.existsByUserUsername(user.getUserUsername())) {
-            logger.info("Username already in database");
+            logger.error("Username already in database");
             return null;
         }
         if (userRepository.existsByUserEmail(user.getUserEmail())) {
-            logger.info("Email already in database");
+            logger.error("Email already in database");
             return null;
         }
         return userRepository.save(user);
@@ -53,8 +53,22 @@ public class UserServiceImpl {
         }
     }
 
-    public void deleteUserById(int id) {
+    public User updateUser(User user) {
+        if (!userRepository.existsById(user.getUserId())) {
+            logger.error("User id not in DB");
+            return null;
+        }
+
+        return userRepository.save(user);
+    }
+
+    public boolean deleteUserById(int id) {
+        if (!userRepository.existsById(id)) {
+            logger.error("User id not in DB");
+            return false;
+        }
         userRepository.deleteByUserId(id);
+        return true;
     }
 
     public void deleteAllUsers() {
@@ -64,19 +78,5 @@ public class UserServiceImpl {
     public List<Image> getAllUserImages(int id) {
         User user = findUserById(id);
         return user.getUserImages();
-    }
-
-    public User update(int id, User user) {
-        User newUser = userRepository.findByUserId(id);
-
-        if (StringUtils.isNotEmpty(user.getUserUsername())) {
-            newUser.setUserUsername(user.getUserUsername());
-        }
-
-        if (StringUtils.isNotEmpty(user.getUserEmail())) {
-            newUser.setUserEmail(user.getUserEmail());
-        }
-
-        return userRepository.save(newUser);
     }
 }

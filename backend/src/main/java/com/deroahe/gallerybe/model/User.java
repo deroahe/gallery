@@ -25,9 +25,9 @@ import javax.validation.constraints.Size;
 @Setter
 public class User {
 
+    @Column(name = "USER_ID")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
     private int userId;
 
     @Column(name = "USER_EMAIL")
@@ -49,6 +49,7 @@ public class User {
     @Column(name = "USER_SUBSCRIBED")
     private boolean userSubscriber = false;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "USER_ID"),
@@ -76,7 +77,7 @@ public class User {
         this.userEmail = userEmail;
     }
 
-    public User(int userId, @NotBlank @Size(max = 50) @Email String userEmail, @NotBlank @Size(max = 20) String userUsername, @NotBlank @Size(max = 120) String userPassword) {
+    public User(int userId, String userEmail, String userUsername, String userPassword) {
         this.userId = userId;
         this.userEmail = userEmail;
         this.userUsername = userUsername;

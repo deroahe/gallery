@@ -21,52 +21,60 @@ public class ImageController {
 
     private ImageServiceImpl imageService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     public ImageController(ImageServiceImpl imageService) {
         this.imageService = imageService;
     }
 
-    @GetMapping
-    public Iterable<Image> getAll() {
-        return imageService.findAllImages();
-    }
-
-    @GetMapping(value = "/urls")
-    public List<String> getAllUrls() {
-        return imageService.getAllUrls();
-    }
-
     @GetMapping("/{id}")
-    public Image getById(@PathVariable int id) {
+    public Image findByImageId(@PathVariable int id) {
         return imageService.findImageById(id);
     }
 
-    @PostMapping(consumes = { "multipart/form-data" })
-    public ResponseEntity<Image> create(@RequestPart("file") MultipartFile multipartFile, @RequestPart("user") User user) throws URISyntaxException {
-        Image savedImage = imageService.saveAndUpload(user.getUserId(), multipartFile);
-        return ResponseEntity.created(new URI("/" + savedImage.getImageId())).body(savedImage);
+    @GetMapping(value = "/urls")
+    public List<String> findAllImageUrls() {
+        return imageService.findAllImageUrls();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Image> deleteById(@PathVariable int id) {
-        imageService.deleteById(id);
-        logger.info("In delete by id");
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Image> deleteAll() {
-        imageService.deleteAll();
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public Iterable<Image> findAllImages() {
+        return imageService.findAllImages();
     }
 
     @PostMapping("/hashtags")
     public List<Image> findAllImagesWithHashtags(@RequestBody List<Integer> hashtagIds) {
-        logger.info("ImageController: findAllImagesWithHashtags");
-        List<Image> images = imageService.findImagesByHashtagIds(hashtagIds);
-        logger.info("Image list size: " + images.size());
         return imageService.findImagesByHashtagIds(hashtagIds);
+    }
+
+    @PostMapping(consumes = { "multipart/form-data" })
+    public ResponseEntity<Image> saveImage(@RequestPart("file") MultipartFile multipartFile, @RequestPart("user") User user) throws URISyntaxException {
+        Image savedImage = imageService.saveAndUpload(user.getUserId(), multipartFile);
+
+        return ResponseEntity.created(new URI("/" + savedImage.getImageId())).body(savedImage);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateImage(Image image) {
+        if (imageService.updateImage(image) != null) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Image> deleteImageById(@PathVariable int id) {
+        if (imageService.deleteById(id)) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/delete-all")
+    public ResponseEntity<Image> deleteAll() {
+        imageService.deleteAll();
+
+        return ResponseEntity.ok().build();
     }
 }

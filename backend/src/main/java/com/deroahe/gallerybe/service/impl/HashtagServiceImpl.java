@@ -3,6 +3,8 @@ package com.deroahe.gallerybe.service.impl;
 import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.repository.HashtagRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +17,27 @@ public class HashtagServiceImpl {
     private HashtagRepository hashtagRepository;
     private ImageServiceImpl imageService;
 
+    private Logger logger = LoggerFactory.getLogger(HashtagServiceImpl.class);
+
     @Autowired
     public HashtagServiceImpl(HashtagRepository hashtagRepository, ImageServiceImpl imageService) {
         this.hashtagRepository = hashtagRepository;
         this.imageService = imageService;
     }
 
+    public boolean existsById(int id) {
+        return hashtagRepository.existsById(id);
+    }
+
+    public boolean existsByName(String hashtagName) {
+        return hashtagRepository.existsByHashtagName(hashtagName);
+    }
+
     public Hashtag findHashtagById(int id) {
         return hashtagRepository.findByHashtagId(id);
     }
 
-    public Hashtag findByName(String name){
+    public Hashtag findHashtagByName(String name){
         return hashtagRepository.findByHashtagName(name);
     }
 
@@ -33,18 +45,41 @@ public class HashtagServiceImpl {
         return hashtagRepository.findAll();
     }
 
-    public void saveHashtag(Hashtag hashtag) {
-        if (hashtagRepository.findByHashtagName(hashtag.getHashtagName()) == null) {
-            hashtagRepository.save(hashtag);
+    public Hashtag saveHashtag(Hashtag hashtag) {
+        if (hashtagRepository.existsByHashtagName(hashtag.getHashtagName())) {
+            logger.error("Hashtag name already in DB");
+            return null;
+        }
+
+        return hashtagRepository.save(hashtag);
+    }
+
+    public void saveAllHashtags(List<Hashtag> hashtags){
+        for (Hashtag hashtag : hashtags) {
+            saveHashtag(hashtag);
         }
     }
 
-    public void saveAllHashtags(List<Hashtag> hashtagList){
-        hashtagList.stream().forEach(h -> {
-            if(hashtagRepository.findByHashtagName(h.getHashtagName()) == null) {
-                hashtagRepository.save(h);
-            }
-        });
+    public Hashtag updateHashtag(Hashtag hashtag) {
+        if (!hashtagRepository.existsByHashtagId(hashtag.getHashtagId())) {
+            logger.error("Hashtag id not in DB");
+            return null;
+        }
+
+        return hashtagRepository.save(hashtag);
+    }
+
+    public boolean deleteHashtagById(int id) {
+        if (!hashtagRepository.existsByHashtagId(id)) {
+            logger.error("Hashtag id not in DB");
+            return false;
+        }
+        hashtagRepository.deleteByHashtagId(id);
+        return true;
+    }
+
+    public void deleteAllHashtags() {
+        hashtagRepository.deleteAll();
     }
 
     public List<Hashtag> findMostUsedHashtags() {

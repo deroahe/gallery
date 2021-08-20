@@ -30,7 +30,7 @@ public class RoleServiceImpl {
         ERole eRole = ERole.valueOf(name);
         Optional<Role> role = roleRepository.findByRoleName(eRole);
         if (role == null) {
-            logger.info("Role name not present in DB");
+            logger.error("Role name not present in DB");
         }
         return role;
     }
@@ -43,7 +43,7 @@ public class RoleServiceImpl {
         if (!roleRepository.existsByRoleName(role.getRoleName())) {
             return roleRepository.save(role);
         }
-        logger.info("Role name already present in DB");
+        logger.error("Role name already present in DB");
         return null;
     }
 

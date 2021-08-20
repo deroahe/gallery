@@ -18,62 +18,38 @@ public class UserController {
 
     private UserServiceImpl userService;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int id) {
+        return userService.findUserById(id);
+    }
+
     @GetMapping
     public Iterable<User> getAllUsers() {
-        logger.info("Get at users");
         return userService.findAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable int id) {
-        User user = userService.findUserById(id);
-
-        if (user != null) {
-            return user;
-        }
-        return null;
-    }
-
-    @PutMapping("/{id}")
+    @PostMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity.BodyBuilder updateUser(@PathVariable("id") int id, @RequestBody User user) {
-        User oldUser = userService.findUserById(id);
-        userService.update(id, user);
-        boolean OK = true;
-
-        if (!StringUtils.equals(user.getUserUsername(), oldUser.getUserUsername())) {
-            OK = false;
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        if (userService.updateUser(user) != null) {
+            return ResponseEntity.ok().build();
         }
 
-        if (!StringUtils.equals(user.getUserEmail(), oldUser.getUserEmail())) {
-            OK = false;
-        }
-
-        if (OK) {
-            logger.info("User not modified because fields were the same");
-//            return ResponseEntity.status(HttpStatus.NOT_MODIFIED);
-        }
-
-        logger.info("User modified successfully");
-        return ResponseEntity.status(HttpStatus.OK);
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> removeUser(@PathVariable int id) {
-        User user = userService.findUserById(id);
-
-        if (user != null) {
-            userService.deleteUserById(id);
-            return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<?> deleteUserById(@PathVariable int id) {
+        if (!userService.deleteUserById(id)) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+
+        return ResponseEntity.ok().build();
     }
 }

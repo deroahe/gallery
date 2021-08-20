@@ -60,9 +60,21 @@ public class ImageServiceImpl {
         return imageRepository.findAll();
     }
 
+    public List<String> findAllImageUrls() {
+        List<Image> allImages = findAllImages();
+        List<String> urls = new ArrayList<>();
+        for (Image image : allImages) {
+            if (image.getImageUrl() != null) {
+                urls.add(image.getImageUrl());
+            }
+        }
+
+        return urls;
+    }
+
     public Image saveImage(Image image) {
         if (imageRepository.existsByImageUrl(image.getImageUrl())) {
-            logger.info("Image URL already in database");
+            logger.error("Image URL already in database");
             return null;
         }
         return imageRepository.save(image);
@@ -73,6 +85,7 @@ public class ImageServiceImpl {
             saveImage(image);
         }
     }
+
     public Image saveAndUpload(int userId, MultipartFile file) {
         try {
             params.put("public_id", "test_be/" + file.getOriginalFilename());
@@ -85,7 +98,7 @@ public class ImageServiceImpl {
             File tempFile = new File(String.valueOf(path.toFile()));
             boolean deleted = tempFile.delete();
             if (!deleted) {
-                logger.info("Temporary file couldn't be deleted. Path: " + path.toString());
+                logger.error("Temporary file couldn't be deleted. Path: " + path.toString());
             }
             return imageRepository.save(image);
         } catch (IOException e) {
@@ -95,8 +108,24 @@ public class ImageServiceImpl {
             return null;
         }
     }
-    public void deleteById(int id) {
+
+    public Image updateImage(Image image) {
+        if (!imageRepository.existsById(image.getImageId())) {
+            logger.error("Image id not in DB");
+            return null;
+        }
+
+        return imageRepository.save(image);
+    }
+
+    public boolean deleteById(int id) {
+        if (!imageRepository.existsById(id)) {
+            logger.error("Image id not in DB");
+            return false;
+        }
+
         imageRepository.deleteByImageId(id);
+        return true;
     }
 
     public void deleteAll() {
@@ -113,20 +142,6 @@ public class ImageServiceImpl {
         }
 
         return filepath;
-    }
-
-    public List<String> getAllUrls() {
-        List<Image> allImages = findAllImages();
-        List<String> urls = new ArrayList<>();
-        for (Image image : allImages) {
-            if (image.getImageUrl() != null) {
-                logger.info("In get all urls");
-                urls.add(image.getImageUrl());
-            }
-
-        }
-
-        return urls;
     }
 
     public List<Image> findImagesByHashtag(String hashtagName){
@@ -236,7 +251,7 @@ public class ImageServiceImpl {
                 }
                 break;
             default:
-                logger.info("This category does not exist!");
+                logger.error("This category does not exist!");
         }
 
         return resultingImages;

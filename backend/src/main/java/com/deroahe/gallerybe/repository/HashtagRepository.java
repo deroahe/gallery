@@ -7,13 +7,15 @@ import java.util.List;
 
 public interface HashtagRepository extends CrudRepository<Hashtag, Integer> {
 
+    Boolean existsByHashtagName(String name);
+
+    Boolean existsByHashtagId(int id);
+
     Hashtag findByHashtagId(int id);
 
     Hashtag findByHashtagName(String name);
 
     List<Hashtag> findAll();
-
-    Boolean existsByHashtagName(String name);
 
     void deleteByHashtagId(int id);
 

@@ -149,11 +149,6 @@ public class TestController {
         }
         roles = roleService.findAllRoles();
 
-//        List<Comment> comments = populateCommentList();
-//        commentService.saveAllComments(comments);
-//        comments = commentService.findAllComments();
-
-
         // creating relations between tables
         // User MtM Role
         Set<Role> setRoleUser = new HashSet<>();
@@ -209,6 +204,37 @@ public class TestController {
         images.get(8).setImageHashtags(imageHashtags2);
         images.get(9).setImageHashtags(imageHashtags1);
         imageService.saveAllImages(images);
+
+        // User OtM Comment && Image OtM Comment
+        List<Comment> comments = populateCommentList();
+        Image image1 = imageService.findImageById(1);
+        Image image2 = imageService.findImageById(2);
+        Image image3 = imageService.findImageById(3);
+        User user1 = userService.findUserById(1);
+        User user2 = userService.findUserById(2);
+        comments.get(0).setCommentImage(image1);
+        comments.get(0).setCommentUser(user1);
+        comments.get(1).setCommentImage(image1);
+        comments.get(1).setCommentUser(user1);
+        comments.get(2).setCommentImage(image1);
+        comments.get(2).setCommentUser(user1);
+        comments.get(3).setCommentImage(image1);
+        comments.get(3).setCommentUser(user1);
+        comments.get(4).setCommentImage(image1);
+        comments.get(4).setCommentUser(user1);
+        comments.get(5).setCommentImage(image1);
+        comments.get(5).setCommentUser(user1);
+        comments.get(6).setCommentImage(image1);
+        comments.get(6).setCommentUser(user1);
+        commentService.saveAllComments(comments);
+        image1 = imageService.findImageById(image1.getImageId());
+        image1.setImageComments(commentService.findCommentsByImage(image1));
+        imageService.updateImage(image1);
+        image1 = imageService.findImageById(image1.getImageId());
+        System.out.println("Comments after updateImage" + image1.getImageComments().size() + "\n\n\n\n\n\n\" ");
+        user1 = userService.findUserById(user1.getUserId());
+        user1.setUserComments(commentService.findCommentsByUser(user1));
+        userService.updateUser(user1);
     }
 
     public List<User> populateUserList() {
@@ -221,7 +247,6 @@ public class TestController {
                         new User("bogdanall@gmail.com", "bogdanall", "parola")
                 )
         );
-
         return users;
     }
 
@@ -233,7 +258,6 @@ public class TestController {
                         new Role(ERole.ROLE_ADMIN)
                 )
         );
-
         return roles;
     }
 
@@ -252,7 +276,6 @@ public class TestController {
                         new Image("http://res.cloudinary.com/do70ia20i/image/upload/v1629280757/test_be/enceladusstripes_cassini_3237.jpg.jpg", 13)
                 )
         );
-
         return images;
     }
 
@@ -268,7 +291,6 @@ public class TestController {
                         new Hashtag("blackhole")
                 )
         );
-
         return hashtags;
     }
 
@@ -285,7 +307,6 @@ public class TestController {
                         new Comment("COOL!")
                 )
         );
-
         return comments;
     }
 }
