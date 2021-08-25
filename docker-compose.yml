@@ -1,0 +1,13 @@
+version: '3'
+services:
+  gallery-web-frontend:
+    image: gallery-web-frontend:latest
+    environment:
+      PORT: 8081
+      PROXY_API: http://gallery-web-backend:8080/
+    ports:
+      - 8081:8081
+  gallery-web-backend:
+    image: gallery-web-backend:latest
+    ports:
+      - 8080:8080

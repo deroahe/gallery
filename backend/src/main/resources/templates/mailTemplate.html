@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+
+
+<style>
+    table{
+        border-collapse : collapse;
+    }
+
+    table , th, td {
+        border:1px solid black;
+    }
+</style>
+
+</head>
+<body>
+<p>Hello <span th:text="${user.getUserUsername()}"></span>,</p>
+
+<!--<div><Image key="${image.getImageUrl}" url = "${image.getImageUrl}"></Image></div>-->
+<h2>Picture of the day !</h2>
+<img th:src="${image.getImageUrl()}" style="width:300px; height:300px;"/>
+<br />
+<hr />
+
+<h2>Most Used Hashtags</h2>
+<table>
+    <thead>
+    <tr>
+        <td class="text-center">
+            <strong>Hashtag #1</strong>
+        </td>
+        <td class="text-center">
+            <strong>Hashtag #2</strong>
+        </td>
+        <td class="text-center">
+            <strong>Hashtag #3</strong>
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:each="hashtag : ${hashtagList}" data-th-text="${hashtag.getHashtagName()}"></td>
+    </tr>
+    </tbody>
+</table>
+<hr/>
+
+<h2> Trivia of the day !</h2>
+<hr />
+<div th:text="${trivia}"></div>
+<br/>
+<p>Thank you for subscribing to our personal updates,</p>
+<p>ARD Football</p>
+<p>Since 2021</p>
+
+</body>
+</html>
