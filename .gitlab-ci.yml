@@ -26,11 +26,8 @@ Build-Backend:
   image: maven:3-jdk-8
   script:
     - echo "Building Backend..."
-    - mvn package -B
+    - mvn package -B -f backend/pom.xml
     - echo "Backend Build Complete!"
-  cache:
-    paths:
-    - backend/.m2/repository/
   artifacts:
     paths:
       - backend/target/*.jar
