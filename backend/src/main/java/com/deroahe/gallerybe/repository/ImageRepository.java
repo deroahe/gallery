@@ -1,5 +1,6 @@
 package com.deroahe.gallerybe.repository;
 
+import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

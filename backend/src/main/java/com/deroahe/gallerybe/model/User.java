@@ -49,7 +49,6 @@ public class User {
     @Column(name = "USER_SUBSCRIBED")
     private boolean userSubscriber = false;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "USER_ID"),

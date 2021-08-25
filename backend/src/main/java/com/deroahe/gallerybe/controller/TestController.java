@@ -213,19 +213,19 @@ public class TestController {
         User user1 = userService.findUserById(1);
         User user2 = userService.findUserById(2);
         comments.get(0).setCommentImage(image1);
-        comments.get(0).setCommentUser(user1);
+        comments.get(0).setCommentUser(users.get(0));
         comments.get(1).setCommentImage(image1);
-        comments.get(1).setCommentUser(user1);
+        comments.get(1).setCommentUser(users.get(1));
         comments.get(2).setCommentImage(image1);
-        comments.get(2).setCommentUser(user1);
+        comments.get(2).setCommentUser(users.get(1));
         comments.get(3).setCommentImage(image1);
-        comments.get(3).setCommentUser(user1);
+        comments.get(3).setCommentUser(users.get(1));
         comments.get(4).setCommentImage(image1);
-        comments.get(4).setCommentUser(user1);
+        comments.get(4).setCommentUser(users.get(4));
         comments.get(5).setCommentImage(image1);
-        comments.get(5).setCommentUser(user1);
+        comments.get(5).setCommentUser(users.get(3));
         comments.get(6).setCommentImage(image1);
-        comments.get(6).setCommentUser(user1);
+        comments.get(6).setCommentUser(users.get(4));
         commentService.saveAllComments(comments);
         image1 = imageService.findImageById(image1.getImageId());
         image1.setImageComments(commentService.findCommentsByImage(image1));
@@ -240,11 +240,11 @@ public class TestController {
     public List<User> populateUserList() {
         List<User> users = new ArrayList<User>(
                 Arrays.asList(
-                        new User("bogdan@gmail.com", "bogdan", "parola"),
-                        new User("bogdanuser@gmail.com", "bogdanuser", "parola"),
-                        new User("bogdanmod@gmail.com", "bogdanmod", "parola"),
-                        new User("bogdanadmin@gmail.com", "bogdanadmin", "parola"),
-                        new User("bogdanall@gmail.com", "bogdanall", "parola")
+                        new User("bogdan@gmail.com", "bogdan", "$2a$10$NZCFLUAqfOotPafMAjqzlezlDSQNFakX1wufjTKvNSPcVqtm9l8zK"),
+                        new User("bogdanuser@gmail.com", "bogdanuser", "$2a$10$NZCFLUAqfOotPafMAjqzlezlDSQNFakX1wufjTKvNSPcVqtm9l8zK"),
+                        new User("bogdanmod@gmail.com", "bogdanmod", "$2a$10$NZCFLUAqfOotPafMAjqzlezlDSQNFakX1wufjTKvNSPcVqtm9l8zK"),
+                        new User("bogdanadmin@gmail.com", "bogdanadmin", "$2a$10$NZCFLUAqfOotPafMAjqzlezlDSQNFakX1wufjTKvNSPcVqtm9l8zK"),
+                        new User("bogdanall@gmail.com", "bogdanall", "$2a$10$NZCFLUAqfOotPafMAjqzlezlDSQNFakX1wufjTKvNSPcVqtm9l8zK")
                 )
         );
         return users;

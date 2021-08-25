@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
+import com.deroahe.gallerybe.model.User;
 import com.deroahe.gallerybe.repository.HashtagRepository;
 import com.deroahe.gallerybe.repository.ImageRepository;
 import com.deroahe.gallerybe.util.CategoryUtils;
@@ -86,15 +87,16 @@ public class ImageServiceImpl {
         }
     }
 
-    public Image saveAndUpload(int userId, MultipartFile file) {
+    public Image saveAndUpload(User user, MultipartFile file) {
         try {
             params.put("public_id", "test_be/" + file.getOriginalFilename());
-            Path path = writeToFile(file, Paths.get("./src/main/resources"));
+            Path path = writeToFile(file, Paths.get("."));
             Map<?,?> uploadResult = cloudinary.uploader().upload(path.toFile(), params);
             logger.info("Saved image to Cloudinary with public_id: " + uploadResult.get("public_id").toString());
 
             Image image = new Image();
             image.setImageUrl(uploadResult.get("url").toString());
+            image.setImageUser(user);
             File tempFile = new File(String.valueOf(path.toFile()));
             boolean deleted = tempFile.delete();
             if (!deleted) {

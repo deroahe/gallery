@@ -2,9 +2,9 @@ package com.deroahe.gallerybe.controller;
 
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
+import com.deroahe.gallerybe.payload.response.MessageResponse;
 import com.deroahe.gallerybe.service.impl.ImageServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.deroahe.gallerybe.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +20,21 @@ import java.util.List;
 public class ImageController {
 
     private ImageServiceImpl imageService;
+    private UserServiceImpl userService;
 
     @Autowired
-    public ImageController(ImageServiceImpl imageService) {
+    public ImageController(ImageServiceImpl imageService, UserServiceImpl userService) {
         this.imageService = imageService;
+        this.userService = userService;
     }
 
     @GetMapping("/{id}")
-    public Image findByImageId(@PathVariable int id) {
-        return imageService.findImageById(id);
+    public ResponseEntity<?> findByImageId(@PathVariable int id) {
+        Image image = imageService.findImageById(id);
+        if (image != null) {
+            return ResponseEntity.ok().body(image);
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Image id not in DB"));
     }
 
     @GetMapping(value = "/urls")
@@ -47,8 +53,12 @@ public class ImageController {
     }
 
     @PostMapping(consumes = { "multipart/form-data" })
-    public ResponseEntity<Image> saveImage(@RequestPart("file") MultipartFile multipartFile, @RequestPart("user") User user) throws URISyntaxException {
-        Image savedImage = imageService.saveAndUpload(user.getUserId(), multipartFile);
+    public ResponseEntity<?> saveImage(@RequestPart("file") MultipartFile multipartFile, @RequestPart("userId") int userId) throws URISyntaxException {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("User id not found"));
+        }
+        Image savedImage = imageService.saveAndUpload(user, multipartFile);
 
         return ResponseEntity.created(new URI("/" + savedImage.getImageId())).body(savedImage);
     }

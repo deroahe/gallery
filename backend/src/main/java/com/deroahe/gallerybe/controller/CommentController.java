@@ -1,6 +1,7 @@
 package com.deroahe.gallerybe.controller;
 
 import com.deroahe.gallerybe.model.Comment;
+import com.deroahe.gallerybe.payload.request.CommentRequest;
 import com.deroahe.gallerybe.payload.response.MessageResponse;
 import com.deroahe.gallerybe.service.impl.CommentServiceImpl;
 import com.deroahe.gallerybe.service.impl.ImageServiceImpl;
@@ -48,13 +49,24 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveHashtag(@RequestBody Comment comment) {
-        if (commentService.saveComment(comment) == null) {
+    public ResponseEntity<?> saveComment(@RequestBody CommentRequest commentRequest) {
+        Comment comment = commentService.saveComment(commentRequest.getCommentString(), commentRequest.getUserId(), commentRequest.getImageId());
+
+        if(comment == null) {
             return ResponseEntity.badRequest().body(new MessageResponse("Comment not saved"));
         }
 
         return ResponseEntity.ok().body(new MessageResponse("Comment saved successfully"));
     }
+//
+//    @PostMapping
+//    public ResponseEntity<?> saveComment(@RequestBody Comment comment) {
+//        if (commentService.saveComment(comment) == null) {
+//            return ResponseEntity.badRequest().body(new MessageResponse("Comment not saved"));
+//        }
+//
+//        return ResponseEntity.ok().body(new MessageResponse("Comment saved successfully"));
+//    }
 
     @PostMapping("/update")
     public ResponseEntity<?> updateComment(@RequestBody Comment comment) {

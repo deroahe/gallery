@@ -39,7 +39,6 @@ public class Image {
     @JoinColumn(name = "IMAGE_USER")
     private User imageUser;
 
-    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "IMAGE_HASHTAG", joinColumns =
     @JoinColumn(name = "IMAGE_ID"),

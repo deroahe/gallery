@@ -52,10 +52,10 @@ public class HashtagController {
     @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteHashtagById(@PathVariable int id) {
         if (!hashtagService.deleteHashtagById(id)) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(new MessageResponse("Hashtag not deleted"));
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new MessageResponse("Hashtag deleted successfully"));
     }
 
     @PostMapping("/delete-all")

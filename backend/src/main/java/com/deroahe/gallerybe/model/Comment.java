@@ -22,13 +22,11 @@ public class Comment {
     @Column(name = "COMMENT_STRING")
     private String commentString;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "COMMENT_IMAGE")
     private Image commentImage;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "COMMENT_USER")
     private User commentUser;
 
@@ -39,8 +37,9 @@ public class Comment {
         this.commentString = commentString;
     }
 
-    public Comment(int commentId, String commentString) {
-        this.commentId = commentId;
+    public Comment(String commentString, User commentUser, Image commentImage) {
         this.commentString = commentString;
+        this.commentUser = commentUser;
+        this.commentImage = commentImage;
     }
 }

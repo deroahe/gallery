@@ -19,8 +19,8 @@ public class UserServiceImpl {
     private UserRepository userRepository;
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Resource(name = "encryptionService")
-    private EncryptionService encryptionService;
+//    @Resource(name = "encryptionService")
+//    private EncryptionService encryptionService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -54,12 +54,16 @@ public class UserServiceImpl {
     }
 
     public User updateUser(User user) {
-        if (!userRepository.existsById(user.getUserId())) {
+        User updatedUser = userRepository.findByUserId(user.getUserId());
+        if (updatedUser == null) {
             logger.error("User id not in DB");
             return null;
         }
 
-        return userRepository.save(user);
+        updatedUser.setUserUsername(user.getUserUsername());
+        updatedUser.setUserEmail(user.getUserEmail());
+
+        return userRepository.save(updatedUser);
     }
 
     public boolean deleteUserById(int id) {
