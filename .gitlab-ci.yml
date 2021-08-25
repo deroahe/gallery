@@ -30,7 +30,7 @@ Build-Backend:
     - echo "Backend Build Complete!"
   artifacts:
     paths:
-      - target/*.jar
+      - backend/target/*.jar
   only:
     - master
 
