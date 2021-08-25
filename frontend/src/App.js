@@ -12,10 +12,12 @@ import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardModerator from "./components/BoardModerator";
 import BoardAdmin from "./components/BoardAdmin";
+import Image from "./components/Image";
 
 // import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
 import FrontPage from "./components/FrontPage";
+import User from "./components/User";
 
 const App = () => {
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -117,6 +119,12 @@ const App = () => {
                                 Sign Up
                             </Link>
                         </li>
+
+                        <li className="nav-item">
+                            <Link to={"/images/1"} className="nav-link">
+                                Image 1
+                            </Link>
+                        </li>
                     </div>
                 )}
             </nav>
@@ -130,7 +138,9 @@ const App = () => {
                     <Route path="/user" component={BoardUser} />
                     <Route path="/mod" component={BoardModerator} />
                     <Route path="/admin" component={BoardAdmin} />
+                    <Route path="/images/:id" component={Image}/>}/>
                     <Route path="/images" component={FrontPage} />
+                    <Route path="/users/:id" component={User}/>
                 </Switch>
             </div>
 
@@ -140,27 +150,3 @@ const App = () => {
 };
 
 export default App;
-
-
-// import React from 'react';
-// import "bootstrap/dist/css/bootstrap.min.css";
-//
-// import FrontPage from "./components/FrontPage";
-// import FileUpload from "./components/FileUpload";
-//
-// import './App.css';
-//
-//
-// function App() {
-//
-//     return (
-//     <div className="app">
-//         <div className="container">
-//             <FrontPage />
-//             <FileUpload />
-//         </div>
-//     </div>
-//     );
-// }
-//
-// export default App;

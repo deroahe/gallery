@@ -1,7 +1,5 @@
 import React,{Component} from 'react';
-import http from '../http-common';
-import ImageService from '../services/images.service';
-import FrontPage from "./FrontPage";
+import ImageService from '../services/image.service';
 
 class App extends Component {
 
@@ -31,15 +29,19 @@ class App extends Component {
             this.state.selectedFile.name
         );
 
-        formData.append(
-            "user",
-            new Blob([JSON.stringify(
-                {
-                    id: 1
-                }
-            )], {
-                type: "application/json"
-            })
+        // formData.append(
+        //     "userId",
+        //     new Blob([JSON.stringify(
+        //         {
+        //             userId: this.props.userId
+        //         }
+        //     )], {
+        //         type: "application/json"
+        //     })
+        // )
+
+        formData.append( "userId",
+            new Blob([this.props.currentUserId], { type: "application/json"})
         )
 
         // Details of the uploaded file
@@ -85,6 +87,7 @@ class App extends Component {
     };
 
     render() {
+
 
         return (
             <div>

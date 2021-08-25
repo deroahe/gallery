@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import UserService from "../services/user.service";
 import EventBus from "../common/EventBus";
+import UsersList from "./UserList";
 
 const BoardAdmin = () => {
     const [content, setContent] = useState("");
@@ -33,6 +34,7 @@ const BoardAdmin = () => {
             <header className="jumbotron">
                 <h3>{content}</h3>
             </header>
+            <UsersList/>
         </div>
     );
 };
