@@ -28,6 +28,9 @@ Build-Backend:
     - echo "Building Backend..."
     - mvn package -B
     - echo "Backend Build Complete!"
+  cache:
+    paths:
+    - backend/.m2/repository/
   artifacts:
     paths:
       - backend/target/*.jar
