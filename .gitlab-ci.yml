@@ -1,0 +1,50 @@
+variables:
+  APP_NAME_FRONTEND: deroahe-gallery-frontend
+  APP_NAME_BACKEND: deroahe-gallery-backend
+
+stages:
+  - build
+  - deploy
+
+Build-Deploy-Frontend-to-Heroku:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  only:
+    - master
+  script:
+    - echo "Deploying Frontend..."
+    - docker login -u _ -p $HEROKU_API_KEY registry.heroku.com
+    - docker build --file=frontend/frontend.dockerfile --rm=true -t registry.heroku.com/$APP_NAME_FRONTEND/web .
+    - docker push registry.heroku.com/$APP_NAME_FRONTEND/web
+    - docker run -e HEROKU_API_KEY=$HEROKU_API_KEY wingrunr21/alpine-heroku-cli:latest container:release web -a $APP_NAME_FRONTEND
+    - echo "Frontend Deployment Complete!"
+
+Build-Backend:
+  stage: build
+  image: maven:3-jdk8
+  script:
+    - echo "Building Backend..."
+    - mvn package -B
+    - echo "Backend Build Complete!"
+  artifacts:
+    paths:
+      - target/*.jar
+  only:
+    - master
+
+Deploy-Backend-to-Heroku:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  only:
+    - master
+  script:
+    - echo "Deploying Backend..."
+    - docker login -u _ -p $HEROKU_API_KEY registry.heroku.com
+    - docker build --file=backend/backend.dockerfile --rm=true -t registry.heroku.com/$APP_NAME_BACKEND/web .
+    - docker push registry.heroku.com/$APP_NAME_BACKEND/web
+    - docker run -e HEROKU_API_KEY=$HEROKU_API_KEY wingrunr21/alpine-heroku-cli:latest container:release web -a $APP_NAME_BACKEND
+    - echo "Backend Deployment Complete!"
