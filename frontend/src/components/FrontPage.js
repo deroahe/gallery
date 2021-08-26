@@ -21,6 +21,11 @@ const FrontPage = () => {
             })
     }
 
+    const style = {
+        display: "block"
+    }
+
+
     const retrieveCurrentUserId = () => {
         const user = AuthService.getCurrentUser(localStorage.getItem("user"));
         if (user) {
@@ -29,23 +34,10 @@ const FrontPage = () => {
 
     }
 
-    const appendNewlyUploadedImage = (imageUrl) => {
-        setImages(images => [...images, imageUrl])
-    }
-
     return (
-        <div>
-            <div className="frontPage">
-                Images:
-                <button onClick={retrieveImages}>Refresh</button>
-                <ImageList images={images}/>
-            </div>
-            <div>
-                <FileUpload
-                    appendNewlyUploadedImage={appendNewlyUploadedImage}
-                    currentUserId={currentUserId}
-                />
-            </div>
+        <div className="frontPage">
+            <ImageList images={images}/>
+            <FileUpload currentUserId={currentUserId} />
         </div>
     );
 }

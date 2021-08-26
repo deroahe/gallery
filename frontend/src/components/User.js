@@ -39,6 +39,7 @@ const User = props => {
         UserDataService.updateUser(currentUser)
             .then(response => {
                 setMessage(response.data.message);
+                props.history.push("/admin");
             })
             .catch(e => {
                 console.log(e);
@@ -49,22 +50,12 @@ const User = props => {
         UserDataService.deleteUser(currentUser)
             .then(response => {
                 setMessage(response.data.message);
+                props.history.push("/admin");
             })
             .catch(e => {
                 console.log(e);
             })
     }
-
-    // const deleteUser = () => {
-    //     UserDataService.remove(currentUser.id)
-    //         .then(response => {
-    //             console.log(response.data);
-    //             props.history.push("/users");
-    //         })
-    //         .catch(e => {
-    //             console.log(e);
-    //         });
-    // };
 
     return (
         <div>
@@ -98,10 +89,6 @@ const User = props => {
                         </div>
 
                     </form>
-
-                    {/* <button className="badge badge-danger mr-2" onClick={deleteUser}>
-                        Delete
-                    </button> */}
 
                     <Button
                         type="submit"

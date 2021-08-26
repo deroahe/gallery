@@ -1,17 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import AuthService from '../services/auth.service';
 import ImageService from '../services/image.service';
 import CommentService from '../services/comment.service';
 import CommentAdd from "./CommentAdd";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
+import Button from "react-bootstrap/Button";
 
 const Image = (props) => {
-    const form = useRef();
-    const checkBtn = useRef();
-
     const initialImageState = {
         imageUrl: "",
         imageHashtags: [],
@@ -19,10 +14,9 @@ const Image = (props) => {
     }
 
     const [currentImage, setCurrentImage] = useState(initialImageState);
-    const [currentUserId, setCurrentUserId] = useState(undefined);
-    const [commentText, setCommentText] = useState("");
-    const [message, setMessage] = useState("");
+    const [currentUserId, setCurrentUserId] = useState(null);
     const [imageComments, setImageComments] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         retrieveCurrentUserId();
@@ -55,47 +49,30 @@ const Image = (props) => {
             .catch((e) => console.log(e));
     }
 
-    const postComment = () => {
-    }
-
-    const handleSubmit = (evt) => {
-        evt.preventDefault();
-        if (checkBtn.current.context._errors.length === 0) {
-            CommentService.postComment(commentText, currentUserId, currentImage.imageId)
-                .then((r) => {
-                    setMessage(r.data.message)
-                })
-                .catch((e) => {
-                    setMessage("Error");
-                    console.log(e);
-                });
-        }
-    }
-
-    const onChangeComment = (e) => {
-        const commentText = e.target.value;
-        setCommentText(commentText);
-    }
+    // const deleteImage = () => {
+    //     ImageService.deleteImage(currentImage.imageId)
+    //         .then(
+    //             props.history.push("/images")
+    //         )
+    //         .catch((e) => console.log(e))
+    // }
 
     return (
         <div>
-            <img src={currentImage.imageUrl} alt={currentImage.imageUrl}/>
-            {
-                <Form onSubmit={handleSubmit} ref={form}>
-                    <label htmlFor="commentText">
-                        Post a comment
-                    </label>
-                        <Input
-                            type="text"
-                            className="form-control"
-                            name="commentText"
-                            value={commentText}
-                            onChange={onChangeComment}
-                        />
-                    <CheckButton style={{ display: "none" }} ref={checkBtn} />
-                </Form>
-            }
-            {message}
+            <img src={currentImage.imageUrl} alt={currentImage.imageUrl}
+                 onLoad={ () => setLoading(false) }
+            />
+            {/*<Button*/}
+            {/*    type="submit"*/}
+            {/*    className="admin-operation-button"*/}
+            {/*    onClick={deleteImage}*/}
+            {/*>*/}
+            {/*    Delete*/}
+            {/*</Button>*/}
+            {currentUserId && currentImage.imageId ? (
+                <CommentAdd userId={currentUserId} imageId={currentImage.imageId}/>
+            ) : ''}
+
             <h2>
                 HASHTAGS:
             </h2>
@@ -113,7 +90,6 @@ const Image = (props) => {
                     <h6 key={index}>{comment.commentString} by <strong key={index}>{comment.commentUser.userUsername}</strong></h6>
                 )
             }
-
         </div>
     );
 }

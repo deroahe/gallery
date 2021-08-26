@@ -5,7 +5,8 @@ class App extends Component {
 
     state = {
         // Initially, no file is selected
-        selectedFile: null
+        selectedFile: null,
+        hashtagsNames: ''
     };
 
     // On file select (from the pop up)
@@ -14,6 +15,10 @@ class App extends Component {
         // Update the state
         this.setState({ selectedFile: event.target.files[0] });
 
+    };
+
+    handleInputChange = event => {
+        this.setState({ ...this.state, hashtagsNames: event.target.value });
     };
 
     // On file upload (click the upload button)
@@ -29,17 +34,6 @@ class App extends Component {
             this.state.selectedFile.name
         );
 
-        // formData.append(
-        //     "userId",
-        //     new Blob([JSON.stringify(
-        //         {
-        //             userId: this.props.userId
-        //         }
-        //     )], {
-        //         type: "application/json"
-        //     })
-        // )
-
         formData.append( "userId",
             new Blob([this.props.currentUserId], { type: "application/json"})
         )
@@ -49,8 +43,12 @@ class App extends Component {
 
         ImageService.uploadImage(formData)
             .then((response) => {
-                this.props.appendNewlyUploadedImage(response.data.imageUrl);
+                ImageService.saveHashtagsToImage(this.state.hashtagsNames, response.data.imageId)
+                    .then((r) => window.location.reload())
+                    .catch((e) => console.log(e))
             })
+
+        // HashtagService.postHashtags()
     };
 
     // File content to be displayed after
@@ -90,21 +88,23 @@ class App extends Component {
 
 
         return (
-            <div>
-                <h1>
-                    GeeksforGeeks
-                </h1>
+            <>
                 <h3>
-                    File Upload using React!
+                    Upload an image
                 </h3>
                 <div>
-                    <input  name="file" type="file" onChange={this.onFileChange} />
+                    <input name="file" type="file" onChange={this.onFileChange} />
+                    <input type="text"
+                           id="hashtagsNamesInput"
+                           name="hashtagsNamesInput"
+                           defaultValue={this.state.hashtagsNames}
+                           onChange={this.handleInputChange}/>
                     <button onClick={this.onFileUpload} hidden={!this.state.selectedFile}>
                         Upload!
                     </button>
                 </div>
                 {this.fileData()}
-            </div>
+            </>
         );
     }
 }
