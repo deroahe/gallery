@@ -1,4 +1,4 @@
-package com.deroahe.gallerybe.mail;
+package com.deroahe.gallerybe.util.mail;
 
 import org.springframework.stereotype.Component;
 

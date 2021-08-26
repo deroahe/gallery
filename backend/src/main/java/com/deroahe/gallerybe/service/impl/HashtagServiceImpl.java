@@ -45,18 +45,45 @@ public class HashtagServiceImpl {
         return hashtagRepository.findAll();
     }
 
-    public Hashtag saveHashtag(Hashtag hashtag) {
-        if (hashtagRepository.existsByHashtagName(hashtag.getHashtagName())) {
-            logger.error("Hashtag name already in DB");
-            return null;
-        }
+//    public List<Hashtag> saveHashtagsWithImage(String hashtagsNames, int imageId) {
+//        Image image = imageService.findImageById(imageId);
+//        if (hashtagsNames == null || image == null) {
+//            logger.error("Hashtags names missing or image id not found in DB");
+//            return null;
+//        }
+//        List<String> hashtagsNamesList = Arrays.asList(hashtagsNames.split("\\s*,\\s*"));
+//        List<Hashtag> hashtagList = new ArrayList<>();
+//        for (String hashtagName : hashtagsNamesList) {
+//            Hashtag hashtagToAdd = findHashtagByName(hashtagName);
+//            List<Image> hashtagImages = new ArrayList<>();
+//            if (hashtagToAdd == null) {
+//                hashtagToAdd = new Hashtag(hashtagName);
+//                hashtagRepository.save(hashtagToAdd);
+//            } else {
+//                hashtagImages = hashtagToAdd.getHashtagImages();
+//                hashtagToAdd.setHashtagImages(hashtagImages);
+//            }
+//            hashtagImages.add(image);
+//            hashtagToAdd.setHashtagImages(hashtagImages);
+//            hashtagList.add(hashtagToAdd);
+//            hashtagRepository.save(hashtagToAdd);
+//        }
+//
+//        return hashtagList;
+//    }
 
-        return hashtagRepository.save(hashtag);
+    public Hashtag saveHashtag(String hashtagName) {
+        if (!existsByName(hashtagName)) {
+            Hashtag hashtag = new Hashtag(hashtagName);
+            return hashtagRepository.save(hashtag);
+        }
+        logger.error("Hashtag name already in DB");
+        return null;
     }
 
     public void saveAllHashtags(List<Hashtag> hashtags){
         for (Hashtag hashtag : hashtags) {
-            saveHashtag(hashtag);
+            hashtagRepository.save(hashtag);
         }
     }
 
@@ -139,5 +166,22 @@ public class HashtagServiceImpl {
                 }
             }
         });
+    }
+
+    public int hashtagCount(String hashtagName) {
+        Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagName);
+        int nr = 0;
+        if(hashtag != null){
+            List<Image> imageList = imageService.findAllImages();
+            for(Image image : imageList){
+                if(image.getImageHashtags().size() > 0 ){
+                    if(image.getImageHashtags().contains(hashtag)){
+                        nr ++;
+                    }
+                }
+            }
+        }
+
+        return nr;
     }
 }

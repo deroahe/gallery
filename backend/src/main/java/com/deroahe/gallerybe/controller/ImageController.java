@@ -2,6 +2,7 @@ package com.deroahe.gallerybe.controller;
 
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
+import com.deroahe.gallerybe.payload.request.HashtagAddRequest;
 import com.deroahe.gallerybe.payload.response.MessageResponse;
 import com.deroahe.gallerybe.service.impl.ImageServiceImpl;
 import com.deroahe.gallerybe.service.impl.UserServiceImpl;
@@ -63,6 +64,16 @@ public class ImageController {
         return ResponseEntity.created(new URI("/" + savedImage.getImageId())).body(savedImage);
     }
 
+    @PostMapping("/save-image-hashtags")
+    public ResponseEntity<?> saveHashtagsToImage(@RequestBody HashtagAddRequest hashtagAddRequest) throws URISyntaxException {
+        Image image = imageService.saveHashtagsToImage(hashtagAddRequest.getHashtagsNames(), hashtagAddRequest.getImageId());
+        if (image == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Image id not found"));
+        }
+
+        return ResponseEntity.created(new URI("/" + image.getImageId())).body(image);
+    }
+
     @PostMapping("/update")
     public ResponseEntity<?> updateImage(Image image) {
         if (imageService.updateImage(image) != null) {
@@ -72,7 +83,7 @@ public class ImageController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Image> deleteImageById(@PathVariable int id) {
         if (imageService.deleteById(id)) {
             return ResponseEntity.ok().build();

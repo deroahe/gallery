@@ -21,6 +21,7 @@ public class GalleryBeApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/api/**").allowedOrigins("https://deroahe-gallery-frontend.herokuapp.com:8081");
+//				registry.addMapping("/api/**").allowedOrigins("http://localhost:8081");
 			}
 		};
 	}

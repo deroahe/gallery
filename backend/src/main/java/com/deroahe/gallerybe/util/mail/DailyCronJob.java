@@ -1,4 +1,4 @@
-package com.deroahe.gallerybe.mail;
+package com.deroahe.gallerybe.util.mail;
 
 import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;

@@ -1,6 +1,7 @@
 package com.deroahe.gallerybe.controller;
 
 import com.deroahe.gallerybe.model.Hashtag;
+import com.deroahe.gallerybe.payload.request.HashtagAddRequest;
 import com.deroahe.gallerybe.payload.response.MessageResponse;
 import com.deroahe.gallerybe.service.impl.HashtagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,9 @@ public class HashtagController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveHashtag(@RequestBody Hashtag hashtag) {
-        if (hashtagService.saveHashtag(hashtag) == null) {
+    public ResponseEntity<?> saveHashtag(@RequestBody String hashtagName) {
+        Hashtag hashtag = hashtagService.saveHashtag(hashtagName);
+        if (hashtag == null) {
             return ResponseEntity.badRequest().body(new MessageResponse("Hashtag not saved"));
         }
 

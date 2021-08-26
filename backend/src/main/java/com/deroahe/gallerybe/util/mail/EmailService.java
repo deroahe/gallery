@@ -1,4 +1,4 @@
-package com.deroahe.gallerybe.mail;
+package com.deroahe.gallerybe.util.mail;
 
 
 import com.deroahe.gallerybe.model.Hashtag;
@@ -10,7 +10,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 

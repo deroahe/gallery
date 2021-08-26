@@ -2,7 +2,7 @@ package com.deroahe.gallerybe.payload.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class CommentRequest {
+public class CommentAddRequest {
     @NotBlank
     private String commentString;
 

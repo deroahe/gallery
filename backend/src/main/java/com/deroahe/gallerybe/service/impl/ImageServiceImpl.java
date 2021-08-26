@@ -111,6 +111,26 @@ public class ImageServiceImpl {
         }
     }
 
+    public Image saveHashtagsToImage(String hashtagsNames, int imageId) {
+        Image image = imageRepository.findByImageId(imageId);
+        if (hashtagsNames == null || image == null) {
+            logger.error("Hashtags names missing or image id not found in DB");
+            return null;
+        }
+        List<String> hashtagsNamesList = Arrays.asList(hashtagsNames.split("\\s*,\\s*"));
+        Set<Hashtag> imageHashtags = new HashSet<>(image.getImageHashtags());
+        for (String hashtagName : hashtagsNamesList) {
+            Hashtag hashtagToAdd = hashtagRepository.findByHashtagName(hashtagName);
+            if (hashtagToAdd == null) {
+                hashtagToAdd = new Hashtag(hashtagName);
+                hashtagRepository.save(hashtagToAdd);
+            }
+            imageHashtags.add(hashtagToAdd);
+        }
+        image.setImageHashtags(new ArrayList<>(imageHashtags));
+        return imageRepository.save(image);
+    }
+
     public Image updateImage(Image image) {
         if (!imageRepository.existsById(image.getImageId())) {
             logger.error("Image id not in DB");
