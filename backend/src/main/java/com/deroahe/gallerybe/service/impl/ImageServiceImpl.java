@@ -235,7 +235,7 @@ public class ImageServiceImpl {
 
     }
 
-    public List<Image> returnImagesByCategory(String category){
+    public List<Image> findImagesByCategory(String category){
         List<Image> allImages = imageRepository.findAll();
         List<Image> resultingImages = new ArrayList<>();
         switch (category) {

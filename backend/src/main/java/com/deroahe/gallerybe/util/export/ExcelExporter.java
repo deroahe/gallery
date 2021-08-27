@@ -209,14 +209,14 @@ public class ExcelExporter {
         style.setAlignment(HorizontalAlignment.CENTER);
 
 
-        for(Image image : excelData.getMostUpvotedImages()){
-            Row row = sheet.createRow(rowCount);
-            int column = 0;
-            createCell(row, column++, "", style);
-            createCell(row, column++, image.getImageUrl(), style);
-            createCell(row, column++, String.valueOf(image.getImageScore()), style);
-            rowCount++;
-        }
+//        for(Image image : excelData.getMostUpvotedImages()){
+//            Row row = sheet.createRow(rowCount);
+//            int column = 0;
+//            createCell(row, column++, "", style);
+//            createCell(row, column++, image.getImageUrl(), style);
+//            createCell(row, column++, String.valueOf(image.getImageScore()), style);
+//            rowCount++;
+//        }
 
 
         for (int j = 0; j < MAX_NUMBER_OF_COLUMNS; j++) {
@@ -260,10 +260,9 @@ public class ExcelExporter {
 
     //public void export(HttpServletResponse response) throws IOException {
     public void export(HttpServletResponse response) throws IOException {
-        writeImageAppHeader("Image Application Summary Report");
+        writeImageAppHeader("Gallery Summary Report");
         int rowNr = writeHeaderLineHashtags(1);
         rowNr = writeHashtagDataLines(rowNr+1);
-        rowNr = writeHeaderLineImages(rowNr+3);
         rowNr = writeImageDataLines(rowNr+1);
         rowNr = writeHeaderLineUsers(rowNr+3);
         rowNr = writeUserDataLines(rowNr+1);

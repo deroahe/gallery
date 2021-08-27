@@ -36,7 +36,7 @@ public class UtilController {
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=imageAppStats_" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=galleryStats_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
         ExcelData excelData = excelDataService.getExportDataElements(true);

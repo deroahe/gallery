@@ -14,6 +14,16 @@ public class SignupRequest {
     @Email
     private String email;
 
+    public boolean isUserSubscriber() {
+        return userSubscriber;
+    }
+
+    public void setUserSubscriber(boolean userSubscriber) {
+        this.userSubscriber = userSubscriber;
+    }
+
+    private boolean userSubscriber;
+
     private Set<String> role;
 
     @NotBlank

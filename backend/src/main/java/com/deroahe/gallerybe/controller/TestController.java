@@ -65,7 +65,7 @@ public class TestController {
             }
         }
         System.out.println("\n\n\n\n");
-        List<Image> images = imageService.returnImagesByCategory("Animals");
+        List<Image> images = imageService.findImagesByCategory("Animals");
         for(Image i : images) {
             System.out.println("id -> " + i.getImageId() + "     " + i.getImageUrl());
         }

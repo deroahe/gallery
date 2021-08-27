@@ -121,6 +121,7 @@ public class AuthenticationController {
         }
 
         user.setUserRoles(roles);
+        user.setUserSubscriber(signUpRequest.isUserSubscriber());
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

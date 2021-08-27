@@ -92,7 +92,7 @@ public class ExcelDataService {
             map.put(hashtag.getHashtagName(), nr);
         }
 
-        ExcelData excelData = new ExcelData(topHashtags, finalImages, finalUserList, map);
+        ExcelData excelData = new ExcelData(topHashtags, finalUserList, map);
 
         return excelData;
     }

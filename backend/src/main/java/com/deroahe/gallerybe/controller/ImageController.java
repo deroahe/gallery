@@ -8,6 +8,7 @@ import com.deroahe.gallerybe.service.impl.ImageServiceImpl;
 import com.deroahe.gallerybe.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +52,18 @@ public class ImageController {
     @PostMapping("/hashtags")
     public List<Image> findAllImagesWithHashtags(@RequestBody List<Integer> hashtagIds) {
         return imageService.findImagesByHashtagIds(hashtagIds);
+    }
+
+    @GetMapping("/images-by-category/{category}")
+    public ResponseEntity<?> findImagesByCategory(@PathVariable String category) {
+        if (StringUtils.isEmpty(category)) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Provide a category"));
+        }
+        List<Image> images = imageService.findImagesByCategory(category);
+        if (images != null) {
+            return ResponseEntity.ok().body(images);
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Category not found"));
     }
 
     @PostMapping(consumes = { "multipart/form-data" })
