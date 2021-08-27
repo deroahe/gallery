@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import UserDataService from "../services/user.service";
-
 import Button from 'react-bootstrap/Button';
+
+import UserDataService from "../services/user.service";
 
 const User = props => {
     const initialUserState = {

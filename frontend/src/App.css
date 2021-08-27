@@ -22,24 +22,13 @@ label {
 }
 
 .profile-img-card {
-  height: 200px;
+  height: 250px;
+  width: 200px;
   margin: 0 auto 10px;
   padding-inline: 10px;
   display: inline-block;
   max-inline-size: 500px;
 }
-
-
-/*.app {*/
-/*  box-sizing: border-box;*/
-/*  width: 100%;*/
-/*}*/
-
-/*.frontPage {*/
-/*}*/
-
-/*.imageListDiv {*/
-/*}*/
 
 .imageDiv {
   margin: 5px;
@@ -51,6 +40,28 @@ label {
 .imageDiv img {
   width: 100%;
   height: auto;
+}
+
+.imageComponentDiv {
+  justify-content: center;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.imageComponentDiv img {
+
+  width: 600px;
+  height: auto;
+}
+
+.uploadAndSetHashtagsDiv {
+  display: flex;
+  margin: 20px 20px 100px 20px;
+}
+
+.signUpLabelAndCheckbox {
+  display: flex;
 }
 
 .hashtag {
@@ -80,6 +91,10 @@ div.imageDiv:hover {
   grid-template-areas:
           'image image image image image';
   background-color: cornflowerblue;
+}
+
+.categoryNameDiv {
+  text-align: center;
 }
 
 .admin-operation-button {

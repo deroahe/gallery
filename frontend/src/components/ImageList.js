@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import ImageService from '../services/image.service';
 import {Link} from "react-router-dom";
 
-const ImageList = props => {
+const ImageList = () => {
 
     const [images, setImages] = useState([]);
 

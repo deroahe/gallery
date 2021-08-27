@@ -5,17 +5,19 @@ import ImageService from '../services/image.service';
 import CommentService from '../services/comment.service';
 import CommentAdd from "./CommentAdd";
 import Button from "react-bootstrap/Button";
+import {Link} from "react-router-dom";
 
 const Image = (props) => {
     const initialImageState = {
         imageUrl: "",
-        imageHashtags: [],
+        imageHashtags: undefined,
         imageComments: []
     }
 
     const [currentImage, setCurrentImage] = useState(initialImageState);
     const [currentUserId, setCurrentUserId] = useState(null);
-    const [imageComments, setImageComments] = useState([]);
+    const [imageComments, setImageComments] = useState(undefined);
+    const [fullSize, setFullSize] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -43,9 +45,7 @@ const Image = (props) => {
 
     const findCommentsByImage = (imageId) => {
         CommentService.findCommentsByImage(imageId)
-            .then((r) => {
-                setImageComments(r.data);
-            })
+            .then((r) => setImageComments(r.data))
             .catch((e) => console.log(e));
     }
 
@@ -57,39 +57,60 @@ const Image = (props) => {
     //         .catch((e) => console.log(e))
     // }
 
-    return (
-        <div>
-            <img src={currentImage.imageUrl} alt={currentImage.imageUrl}
-                 onLoad={ () => setLoading(false) }
-            />
-            {/*<Button*/}
-            {/*    type="submit"*/}
-            {/*    className="admin-operation-button"*/}
-            {/*    onClick={deleteImage}*/}
-            {/*>*/}
-            {/*    Delete*/}
-            {/*</Button>*/}
-            {currentUserId && currentImage.imageId ? (
-                <CommentAdd userId={currentUserId} imageId={currentImage.imageId}/>
-            ) : ''}
+    const imageFullSize = (e) => {
+        e.preventDefault();
+        if (fullSize) {
+            e.target.style.width = '600px'
+            e.target.style.height = 'auto'
+        } else {
+            e.target.style.width = '100%'
+            e.target.style.height = 'auto'
+        }
+        setFullSize(!fullSize);
+    }
 
-            <h2>
-                HASHTAGS:
-            </h2>
-            {
-                currentImage.imageHashtags.map((hashtag, index) => (
-                        <h4 key={index}>#{hashtag.hashtagName}</h4>
+    return (
+        <div className="imageComponentDiv">
+            <div>
+                <img src={currentImage.imageUrl} alt={currentImage.imageUrl}
+                     onLoad={ () => setLoading(false) }
+                     onClick={imageFullSize}
+                />
+                {/*<Button*/}
+                {/*    type="submit"*/}
+                {/*    className="admin-operation-button"*/}
+                {/*    onClick={deleteImage}*/}
+                {/*>*/}
+                {/*    Delete*/}
+                {/*</Button>*/}
+                {currentUserId && currentImage.imageId ? (
+                    <CommentAdd userId={currentUserId} imageId={currentImage.imageId}/>
+                ) : null
+                }
+                {
+                    currentImage.imageHashtags !== undefined && currentImage.imageHashtags.size > 0 ? (
+                            <label>Hashtags</label>
+                    )   : null
+                }
+                {
+                    currentImage.imageHashtags && currentImage.imageHashtags.map((hashtag, index) => (
+                            <h4 key={index}>#{hashtag.hashtagName}</h4>
+                        )
                     )
-                )
-            }
-            <h2>
-                COMMENTS:
-            </h2>
-            {
-                imageComments.map((comment, index) =>
-                    <h6 key={index}>{comment.commentString} by <strong key={index}>{comment.commentUser.userUsername}</strong></h6>
-                )
-            }
+                }
+                {
+                    imageComments !== undefined ? (
+                        <label>Comments</label>
+                    ) : null
+                }
+                {
+                    imageComments && imageComments.map((comment, index) =>
+                        <div key={index}>
+                            <span key={index}>{comment.commentString} </span><span className="commentUser"> &nbsp; by <strong key={index}>{comment.commentUser.userUsername}</strong></span>
+                        </div>
+                    )
+                }
+            </div>
         </div>
     );
 }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import UserService from "../services/user.service";
 import { Link } from "react-router-dom";
-
 import Button from 'react-bootstrap/Button';
+
+import UserService from "../services/user.service";
 
 const UsersList = () => {
     const [users, setUsers] = useState([]);
@@ -16,29 +16,13 @@ const UsersList = () => {
 
     const retrieveUsers = () => {
         UserService.getAllUsers()
-            .then((response) => {
-                setUsers(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            });
+            .then((response) => setUsers(response.data))
+            .catch((e) => console.log(e));
     };
-
-    const retrieveUserImages = (currentUser) => {
-        UserService.getImages(currentUser)
-            .then((response) => {
-                setImages(response.data);
-
-            })
-            .catch(e => {
-                console.log(e);
-            });
-    }
 
     const setActiveUser = (user, index) => {
         setCurrentUser(user);
         setCurrentIndex(index);
-        // retrieveUserImages(user.userId);
     };
 
     return (
@@ -77,20 +61,7 @@ const UsersList = () => {
                             </label>{" "}
                             {currentUser.userId}
                         </div>
-                        <div>
-                            <label>
-                                <strong>Images:</strong>
-                            </label>{" "}
-                            {images.length !== 0 ? (
-                                    images.map((image, index) => (
-                                        <li key={index}>
-                                            {image.imageUrl}
-                                        </li>
-                                    )))
-                                : "No images"
-                            }
-                        </div>
-
+                        <br/>
                         <Link
                             to={"/users/" + currentUser.userId}
                         ><Button>Edit</Button>

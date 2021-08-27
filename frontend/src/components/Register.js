@@ -55,6 +55,7 @@ const Register = (props) => {
     const [password, setPassword] = useState("");
     const [successful, setSuccessful] = useState(false);
     const [message, setMessage] = useState("");
+    const [userSubscriber, setUserSubscriber] = useState(true);
 
     const onChangeUsername = (e) => {
         const username = e.target.value;
@@ -71,6 +72,10 @@ const Register = (props) => {
         setPassword(password);
     };
 
+    const onChangeCheckbox = () => {
+        setUserSubscriber(!userSubscriber);
+    }
+
     const handleRegister = (e) => {
         e.preventDefault();
 
@@ -80,7 +85,7 @@ const Register = (props) => {
         form.current.validateAll();
 
         if (checkBtn.current.context._errors.length === 0) {
-            AuthService.register(username, email, password).then(
+            AuthService.register(username, email, password, userSubscriber).then(
                 (response) => {
                     setMessage(response.data.message);
                     setSuccessful(true);
@@ -148,6 +153,16 @@ const Register = (props) => {
                                 />
                             </div>
 
+                            <div>
+                                <label htmlFor="userSubscriber">Subscribe to the newsletter</label>
+                                <Input
+                                    type="checkbox"
+                                    name="userSubscriber"
+                                    checked={userSubscriber}
+                                    onChange={onChangeCheckbox}
+                                />
+                            </div>
+                            <br/>
                             <div className="form-group">
                                 <button className="btn btn-primary btn-block">Sign Up</button>
                             </div>

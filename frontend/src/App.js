@@ -18,6 +18,7 @@ import Image from "./components/Image";
 import EventBus from "./common/EventBus";
 import FrontPage from "./components/FrontPage";
 import User from "./components/User";
+import ImageCategory from "./components/ImageCategory";
 
 const App = () => {
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -52,29 +53,15 @@ const App = () => {
     return (
         <div>
             <nav className="navbar navbar-expand navbar-dark bg-dark">
-                <Link to={"/"} className="navbar-brand">
+                <Link to={"/images"} className="navbar-brand">
                     Gallery
                 </Link>
                 <div className="navbar-nav mr-auto">
                     <li className="nav-item">
-                        <Link to={"/home"} className="nav-link">
-                            Home
-                        </Link>
-                    </li>
-
-                    <li className="nav-item">
                         <Link to={"/images"} className="nav-link">
-                            Images
+                            Front Page
                         </Link>
                     </li>
-
-                    {showModeratorBoard && (
-                        <li className="nav-item">
-                            <Link to={"/mod"} className="nav-link">
-                                Moderator Board
-                            </Link>
-                        </li>
-                    )}
 
                     {showAdminBoard && (
                         <li className="nav-item">
@@ -84,17 +71,32 @@ const App = () => {
                         </li>
                     )}
 
-                    {currentUser && (
-                        <li className="nav-item">
-                            <Link to={"/user"} className="nav-link">
-                                User
-                            </Link>
-                        </li>
-                    )}
+                    {/*{currentUser && (*/}
+                    {/*    <li className="nav-item">*/}
+                    {/*        <Link to={"/user"} className="nav-link">*/}
+                    {/*            User*/}
+                    {/*        </Link>*/}
+                    {/*    </li>*/}
+                    {/*)}*/}
                 </div>
 
                 {currentUser ? (
                     <div className="navbar-nav ml-auto">
+                        <li className="nav-item">
+                            <Link to={"/images-by-category/Space"} className="nav-link">
+                                Space
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to={"/images-by-category/Animals"} className="nav-link">
+                                Animals
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to={"/images-by-category/Nature"} className="nav-link">
+                                Nature
+                            </Link>
+                        </li>
                         <li className="nav-item">
                             <Link to={"/profile"} className="nav-link">
                                 {currentUser.username}
@@ -119,28 +121,21 @@ const App = () => {
                                 Sign Up
                             </Link>
                         </li>
-
-                        <li className="nav-item">
-                            <Link to={"/images/1"} className="nav-link">
-                                Image 1
-                            </Link>
-                        </li>
                     </div>
                 )}
             </nav>
 
             <div className="container mt-3">
                 <Switch>
-                    <Route exact path={["/", "/home"]} component={Home} />
+                    <Route exact path={["/", "/home"]} component={FrontPage} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/register" component={Register} />
                     <Route exact path="/profile" component={Profile} />
-                    <Route path="/user" component={BoardUser} />
-                    <Route path="/mod" component={BoardModerator} />
                     <Route path="/admin" component={BoardAdmin} />
                     <Route path="/images/:id" component={Image}/>}/>
                     <Route path="/images" component={FrontPage} />
                     <Route path="/users/:id" component={User}/>
+                    <Route path="/images-by-category/:category" component={ImageCategory}/>
                 </Switch>
             </div>
 

@@ -43,12 +43,12 @@ class App extends Component {
 
         ImageService.uploadImage(formData)
             .then((response) => {
-                ImageService.saveHashtagsToImage(this.state.hashtagsNames, response.data.imageId)
-                    .then((r) => window.location.reload())
-                    .catch((e) => console.log(e))
+                if (this.state.hashtagsNames.length > 2) {
+                    ImageService.saveHashtagsToImage(this.state.hashtagsNames, response.data.imageId)
+                        .then((r) => window.location.reload())
+                        .catch((e) => console.log(e))
+                }
             })
-
-        // HashtagService.postHashtags()
     };
 
     // File content to be displayed after
@@ -75,12 +75,7 @@ class App extends Component {
                 </div>
             );
         } else {
-            return (
-                <div>
-                    <br />
-                    <h4>Choose before Pressing the Upload button</h4>
-                </div>
-            );
+            return null;
         }
     };
 
@@ -89,19 +84,24 @@ class App extends Component {
 
         return (
             <>
-                <h3>
-                    Upload an image
-                </h3>
-                <div>
-                    <input name="file" type="file" onChange={this.onFileChange} />
-                    <input type="text"
-                           id="hashtagsNamesInput"
-                           name="hashtagsNamesInput"
-                           defaultValue={this.state.hashtagsNames}
-                           onChange={this.handleInputChange}/>
-                    <button onClick={this.onFileUpload} hidden={!this.state.selectedFile}>
-                        Upload!
-                    </button>
+                <div className="uploadAndSetHashtagsDiv">
+                    <div>
+                        <label>Upload an image</label>
+                        <input name="file" type="file" onChange={this.onFileChange} />
+                    </div>
+                    <div>
+                        <label>Tag your image</label>
+                        <input type="text"
+                               id="hashtagsNamesInput"
+                               name="hashtagsNamesInput"
+                               placeholder="just,like,this"
+                               defaultValue={this.state.hashtagsNames}
+                               onChange={this.handleInputChange}
+                        />
+                        <button onClick={this.onFileUpload} hidden={!this.state.selectedFile}>
+                            Upload!
+                        </button>
+                    </div>
                 </div>
                 {this.fileData()}
             </>
