@@ -1,10 +1,10 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-// const API_URL_TEST = "https://deroahe-gallery-backend.herokuapp.com/api/test/";
-// const API_URL_USERS = "https://deroahe-gallery-backend.herokuapp.com/api/users";
-const API_URL_TEST = "http://localhost:8080/api/test/";
-const API_URL_USERS = "http://localhost:8080/api/users";
+const API_URL_TEST = "https://deroahe-gallery-backend.herokuapp.com/api/test/";
+const API_URL_USERS = "https://deroahe-gallery-backend.herokuapp.com/api/users";
+// const API_URL_TEST = "http://localhost:8080/api/test/";
+// const API_URL_USERS = "http://localhost:8080/api/users";
 
 const getPublicContent = () => {
     return axios.get(API_URL_TEST + "all");
