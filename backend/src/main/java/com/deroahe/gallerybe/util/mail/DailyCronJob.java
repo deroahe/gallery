@@ -34,7 +34,7 @@ public class DailyCronJob {
         this.javaMailSender = javaMailSender;
     }
 
-    @Scheduled(cron = "0 30 16 * * ?")
+    @Scheduled(cron = "0 0 16 * * ?")
     @Transactional
     public void CronSendDailyEmail(){
 
