@@ -13,7 +13,7 @@ const postComment = (commentString, userId, imageId) => {
 }
 
 const findCommentsByImage = (imageId) => {
-    return axios.get(API_URL + "/image-comments/" + imageId)
+    return axios.get(API_URL + "/image-comments/" + imageId, { headers: authHeader() })
 }
 
 export default {
