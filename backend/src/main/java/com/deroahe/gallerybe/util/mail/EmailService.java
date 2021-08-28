@@ -32,8 +32,8 @@ public class EmailService {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("javaproiectechipe@gmail.com");
-        message.setTo("raresalupoaicei@gmail.com");
-        message.setSubject("PictureThings");
+        message.setTo("deroahe@gmail.com");
+        message.setSubject("Gallery Mail Service");
         message.setText(text);
         emailSender.send(message);
 
@@ -57,7 +57,7 @@ public class EmailService {
             public void prepare (MimeMessage mimeMessage) throws Exception {
                 MimeMessageHelper email = new MimeMessageHelper(mimeMessage);
                 email.setTo(user.getUserEmail());
-                email.setSubject("Your Daily Newsletter ");
+                email.setSubject("These are the top 3 hashtags in the Gallery");
                 email.setText(text, true);
                 email.setFrom(new InternetAddress("javaproiectechipe@gmail.com"));
             }

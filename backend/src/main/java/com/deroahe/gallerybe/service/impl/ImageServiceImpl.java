@@ -7,6 +7,7 @@ import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
 import com.deroahe.gallerybe.repository.HashtagRepository;
 import com.deroahe.gallerybe.repository.ImageRepository;
+import com.deroahe.gallerybe.repository.UserRepository;
 import com.deroahe.gallerybe.util.CategoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +29,14 @@ public class ImageServiceImpl {
     private ImageRepository imageRepository;
     private CategoryUtils categoryUtils;
     private HashtagRepository hashtagRepository;
+    private UserRepository userRepository;
     private Cloudinary cloudinary;
     private Map<String, String> params;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public ImageServiceImpl(ImageRepository imageRepository, HashtagRepository hashtagRepository, CategoryUtils categoryUtils) {
+    public ImageServiceImpl(ImageRepository imageRepository, HashtagRepository hashtagRepository, CategoryUtils categoryUtils, UserRepository userRepository) {
         this.imageRepository = imageRepository;
 
         cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -47,6 +49,7 @@ public class ImageServiceImpl {
         );
         this.hashtagRepository = hashtagRepository;
         this.categoryUtils = categoryUtils;
+        this.userRepository = userRepository;
     }
 
     public Image findImageById(int id) {
@@ -55,6 +58,15 @@ public class ImageServiceImpl {
 
     public Image findImageByUrl(String url) {
         return imageRepository.findByImageUrl(url);
+    }
+
+    public List<Image> findImagesByUserId(int userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user != null) {
+            return imageRepository.findImagesByImageUser(user.get());
+        }
+        logger.error("User id not in DB");
+        return null;
     }
 
     public List<Image> findAllImages() {

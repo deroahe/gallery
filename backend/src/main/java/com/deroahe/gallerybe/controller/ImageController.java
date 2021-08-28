@@ -66,6 +66,15 @@ public class ImageController {
         return ResponseEntity.badRequest().body(new MessageResponse("Category not found"));
     }
 
+    @GetMapping("/images-by-user/{userId}")
+    public ResponseEntity<?> findImagesByUserId(@PathVariable int userId) {
+        List<Image> images = imageService.findImagesByUserId(userId);
+        if (images != null) {
+            return ResponseEntity.ok().body(images);
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("User id not found"));
+    }
+
     @PostMapping(consumes = { "multipart/form-data" })
     public ResponseEntity<?> saveImage(@RequestPart("file") MultipartFile multipartFile, @RequestPart("userId") int userId) throws URISyntaxException {
         User user = userService.findUserById(userId);

@@ -15,13 +15,7 @@
 
 </head>
 <body>
-<p>Hello <span th:text="${user.getUserUsername()}"></span>,</p>
-
-<!--<div><Image key="${image.getImageUrl}" url = "${image.getImageUrl}"></Image></div>-->
-<h2>Picture of the day !</h2>
-<img th:src="${image.getImageUrl()}" style="width:300px; height:300px;"/>
-<br />
-<hr />
+<p>Hi <span th:text="${user.getUserUsername()}"></span>,</p>
 
 <h2>Most Used Hashtags</h2>
 <table>
@@ -45,14 +39,9 @@
     </tbody>
 </table>
 <hr/>
-
-<h2> Trivia of the day !</h2>
-<hr />
-<div th:text="${trivia}"></div>
 <br/>
-<p>Thank you for subscribing to our personal updates,</p>
-<p>ARD Football</p>
-<p>Since 2021</p>
+<p>Thank you for subscribing to our newsletter,</p>
+<p>Bogdan from Gallery</p>
 
 </body>
 </html>
