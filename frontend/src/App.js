@@ -103,6 +103,11 @@ const App = () => {
                             </Link>
                         </li>
                         <li className="nav-item">
+                            <Link to={"/user-board"} className="nav-link">
+                                My uploads
+                            </Link>
+                        </li>
+                        <li className="nav-item">
                             <a href="/login" className="nav-link" onClick={logOut}>
                                 LogOut
                             </a>
@@ -135,6 +140,7 @@ const App = () => {
                     <Route path="/images/:id" component={Image}/>}/>
                     <Route path="/images" component={FrontPage} />
                     <Route path="/users/:id" component={User}/>
+                    <Route path="/user-board" component={BoardUser}/>
                     <Route path="/images-by-category/:category" component={ImageCategory}/>
                 </Switch>
             </div>
