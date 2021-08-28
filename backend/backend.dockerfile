@@ -16,5 +16,5 @@ COPY backend/target/*.jar ./app.jar
 EXPOSE $PORT
 
 # Start the app
-CMD [ "java", "-jar", "./app.jar" ]
+CMD [ "java", "-jar", "./app.jar", "-Xmx512m" ]
 #CMD java -Dserver.port=$PORT $JAVA_OPTS -jar ./app.jar
