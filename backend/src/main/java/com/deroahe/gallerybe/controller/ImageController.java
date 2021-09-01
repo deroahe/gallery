@@ -120,4 +120,13 @@ public class ImageController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("get-image-user/{id}")
+    public ResponseEntity<?> getImageUserByImageId(@PathVariable int id) {
+        Image image = imageService.findImageById(id);
+        if (image == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Image not found"));
+        }
+        return ResponseEntity.ok().body(image.getImageUser());
+    }
 }
