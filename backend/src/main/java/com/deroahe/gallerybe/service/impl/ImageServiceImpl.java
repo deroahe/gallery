@@ -2,6 +2,7 @@ package com.deroahe.gallerybe.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.deroahe.gallerybe.model.Comment;
 import com.deroahe.gallerybe.model.Hashtag;
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -30,13 +32,15 @@ public class ImageServiceImpl {
     private CategoryUtils categoryUtils;
     private HashtagRepository hashtagRepository;
     private UserRepository userRepository;
+    private CommentServiceImpl commentService;
+
     private Cloudinary cloudinary;
     private Map<String, String> params;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public ImageServiceImpl(ImageRepository imageRepository, HashtagRepository hashtagRepository, CategoryUtils categoryUtils, UserRepository userRepository) {
+    public ImageServiceImpl(ImageRepository imageRepository, HashtagRepository hashtagRepository, CategoryUtils categoryUtils, UserRepository userRepository, CommentServiceImpl commentService) {
         this.imageRepository = imageRepository;
 
         cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -50,6 +54,7 @@ public class ImageServiceImpl {
         this.hashtagRepository = hashtagRepository;
         this.categoryUtils = categoryUtils;
         this.userRepository = userRepository;
+        this.commentService = commentService;
     }
 
     public Image findImageById(int id) {
@@ -152,12 +157,24 @@ public class ImageServiceImpl {
         return imageRepository.save(image);
     }
 
+    @Transactional
     public boolean deleteById(int id) {
-        if (!imageRepository.existsById(id)) {
+        Image image = imageRepository.findByImageId(id);
+        if (image == null) {
             logger.error("Image id not in DB");
             return false;
         }
-
+        List<Comment> imageComments = image.getImageComments();
+        for (Comment comment : imageComments) {
+            comment.setCommentUser(null);
+            comment.setCommentImage(null);
+            commentService.updateComment(comment);
+            commentService.deleteCommentById(comment.getCommentId());
+        }
+        image.setImageUser(null);
+        image.setImageHashtags(new ArrayList<>());
+        image.setImageComments(new ArrayList<>());
+        imageRepository.save(image);
         imageRepository.deleteByImageId(id);
         return true;
     }

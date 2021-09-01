@@ -1,5 +1,6 @@
 package com.deroahe.gallerybe.service.impl;
 
+import com.deroahe.gallerybe.model.Comment;
 import com.deroahe.gallerybe.model.Image;
 import com.deroahe.gallerybe.model.User;
 import com.deroahe.gallerybe.repository.UserRepository;
@@ -14,14 +15,17 @@ import java.util.List;
 public class UserServiceImpl {
 
     private UserRepository userRepository;
+    private ImageServiceImpl imageService;
+
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 //    @Resource(name = "encryptionService")
 //    private EncryptionService encryptionService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ImageServiceImpl imageService) {
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
 
     public User findUserById(int id) {
@@ -64,10 +68,18 @@ public class UserServiceImpl {
     }
 
     public boolean deleteUserById(int id) {
-        if (!userRepository.existsById(id)) {
+        User user = userRepository.findById(id).get();
+        if (user == null) {
             logger.error("User id not in DB");
             return false;
         }
+        List<Comment> userComments = user.getUserComments();
+        List<Image> userImages = user.getUserImages();
+        for (Image image : userImages) {
+            imageService.deleteById(image.getImageId());
+        }
+
+
         userRepository.deleteByUserId(id);
         return true;
     }

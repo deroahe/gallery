@@ -62,7 +62,6 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "commentUser")
-    @Column(name = "USER_COMMENTS")
     private List<Comment> userComments;
 
     public User(String userEmail, String userUsername, String userPassword) {

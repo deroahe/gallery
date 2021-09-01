@@ -74,7 +74,8 @@ public class CommentServiceImpl {
     }
 
     public boolean deleteCommentById(int id) {
-        if (!commentRepository.existsById(id)) {
+        Comment comment = findCommentById(id);
+        if (comment == null) {
             logger.error("Comment id not in DB");
             return false;
         }

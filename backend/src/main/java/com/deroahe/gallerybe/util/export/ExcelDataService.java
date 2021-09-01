@@ -59,30 +59,30 @@ public class ExcelDataService {
         List<Image> allImages = imageService.findAllImages();
         List<Image> finalImages = new ArrayList<>();
 
-        for (Image i : allImages) {
-            Image imageHelper = new Image();
-            if (finalImages.size() < 5) {
-                finalImages.add(i);
-            } else {
-                Collections.sort(finalImages, new Comparator<Image>() {
-                    public int compare(Image i1, Image i2) {
-                        if (order) {
-                            //compare two object and return an integer
-                            return i1.getImageScore() - (i2.getImageScore());
-                        } else {
-                            return i2.getImageScore() - (i1.getImageScore());
-                        }
-                    }
-                });
-                for(Image ii : finalImages){
-                    System.out.println("imd url  -> " + ii.getImageUrl() + " imd vote " + ii.getImageScore());
-                }
-                if (i.getImageScore() > finalImages.get(0).getImageScore()) {
-                    finalImages.remove(0);
-                    finalImages.add(i);
-                }
-            }
-        }
+//        for (Image i : allImages) {
+//            Image imageHelper = new Image();
+//            if (finalImages.size() < 5) {
+//                finalImages.add(i);
+//            } else {
+//                Collections.sort(finalImages, new Comparator<Image>() {
+//                    public int compare(Image i1, Image i2) {
+//                        if (order) {
+//                            //compare two object and return an integer
+//                            return i1.getImageScore() - (i2.getImageScore());
+//                        } else {
+//                            return i2.getImageScore() - (i1.getImageScore());
+//                        }
+//                    }
+//                });
+//                for(Image ii : finalImages){
+//                    System.out.println("imd url  -> " + ii.getImageUrl() + " imd vote " + ii.getImageScore());
+//                }
+//                if (i.getImageScore() > finalImages.get(0).getImageScore()) {
+//                    finalImages.remove(0);
+//                    finalImages.add(i);
+//                }
+//            }
+//        }
 
         List<Hashtag> topHashtags = hashtagService.findMostUsedHashtags();
 

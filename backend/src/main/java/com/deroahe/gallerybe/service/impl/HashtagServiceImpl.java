@@ -81,6 +81,14 @@ public class HashtagServiceImpl {
         return null;
     }
 
+    public Hashtag saveHashtagObject(Hashtag hashtag) {
+        if (!existsByName(hashtag.getHashtagName())) {
+            return hashtagRepository.save(hashtag);
+        }
+        logger.error("Hashtag name already in DB");
+        return null;
+    }
+
     public void saveAllHashtags(List<Hashtag> hashtags){
         for (Hashtag hashtag : hashtags) {
             hashtagRepository.save(hashtag);

@@ -24,12 +24,6 @@ public class Image {
     @Column(name = "IMAGE_URL")
     private String imageUrl;
 
-    @Column(name = "IMAGE_SCORE")
-    private int imageScore;
-
-    @Column(name = "IMAGE_TIMESTAMP")
-    private Timestamp imageTimestamp;
-
     @JsonIgnore
     @OneToMany(mappedBy = "commentImage")
     private List<Comment> imageComments;
@@ -40,26 +34,24 @@ public class Image {
     private User imageUser;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "IMAGE_HASHTAG", joinColumns =
-    @JoinColumn(name = "IMAGE_ID"),
+    @JoinTable(
+            name = "IMAGE_HASHTAG",
+            joinColumns = @JoinColumn(name = "IMAGE_ID"),
             inverseJoinColumns = @JoinColumn(name = "HASHTAG_ID"))
     private List<Hashtag> imageHashtags;
 
     public Image(String imageUrl, User imageUser, int imageScore) {
         this.imageUrl = imageUrl;
         this.imageUser = imageUser;
-        this.imageScore = imageScore;
     }
 
     public Image(String imageUrl, int imageScore) {
         this.imageUrl = imageUrl;
-        this.imageScore = imageScore;
     }
 
     public Image(int imageId, String imageUrl, int imageScore) {
         this.imageId = imageId;
         this.imageUrl = imageUrl;
-        this.imageScore = imageScore;
     }
 
 
