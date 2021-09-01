@@ -19,6 +19,7 @@ const Image = (props) => {
     const [fullSize, setFullSize] = useState(false);
     const [loading, setLoading] = useState(true);
     const [renderDelete, setRenderDelete] = useState(false);
+    const [uploadedBy, setUploadedBy] = useState('');
 
     useEffect(() => {
         retrieveCurrentUserId();
@@ -30,6 +31,7 @@ const Image = (props) => {
         ImageService.getImageById(imageId)
             .then((response) => {
                 setCurrentImage(response.data);
+                setUploadedBy(response.data.imageUser.userUsername)
             })
             .catch((err) => {
                 console.log(err);
@@ -79,7 +81,9 @@ const Image = (props) => {
                      onLoad={ () => setLoading(false) }
                      onClick={imageFullSize}
                 />
-
+                <div>
+                    {uploadedBy}
+                </div>
                 {renderDelete &&
                 <div>
                     <Button
