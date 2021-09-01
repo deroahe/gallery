@@ -24,6 +24,7 @@ const Image = (props) => {
     useEffect(() => {
         retrieveCurrentUserId();
         retrieveImage(props.match.params.id);
+        retrieveImageUser(props.match.params.id);
         findCommentsByImage(props.match.params.id);
     }, [props.match.params.id]);
 
@@ -36,6 +37,12 @@ const Image = (props) => {
             .catch((err) => {
                 console.log(err);
             })
+    }
+
+    const retrieveImageUser = (imageId) => {
+        ImageService.getImageUser(imageId)
+            .then((r) => { setUploadedBy(r.data.userUsername) })
+            .catch((e) => { console.log(e) })
     }
 
     const retrieveCurrentUserId = () => {
@@ -82,7 +89,7 @@ const Image = (props) => {
                      onClick={imageFullSize}
                 />
                 <div>
-                    {uploadedBy}
+                    Uploaded by <strong>{uploadedBy}</strong>
                 </div>
                 {renderDelete &&
                 <div>

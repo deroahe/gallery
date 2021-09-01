@@ -32,6 +32,10 @@ const deleteImage = (imageId) => {
     return axios.post(API_URL + "/delete/" + imageId, null, { headers: authHeader() })
 }
 
+const getImageUser = (imageId) => {
+    return axios.get(API_URL + "/get-image-user/" + imageId, { headers: authHeader() });
+}
+
 export default {
     getAllImages,
     uploadImage,
@@ -40,4 +44,5 @@ export default {
     deleteImage,
     getAllImagesByCategory,
     getAllImagesByUserId,
+    getImageUser,
 }
