@@ -5,7 +5,6 @@ import ImageService from '../services/image.service';
 import CommentService from '../services/comment.service';
 import CommentAdd from "./CommentAdd";
 import Button from "react-bootstrap/Button";
-import {Link} from "react-router-dom";
 
 const Image = (props) => {
     const initialImageState = {
@@ -19,6 +18,7 @@ const Image = (props) => {
     const [imageComments, setImageComments] = useState(undefined);
     const [fullSize, setFullSize] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [renderDelete, setRenderDelete] = useState(false);
 
     useEffect(() => {
         retrieveCurrentUserId();
@@ -38,6 +38,9 @@ const Image = (props) => {
 
     const retrieveCurrentUserId = () => {
         const user = AuthService.getCurrentUser(localStorage.getItem("user"));
+        if (user.roles.includes("ROLE_ADMIN")) {
+            setRenderDelete(true);
+        }
         if (user) {
             setCurrentUserId(user.id);
         }
@@ -49,13 +52,13 @@ const Image = (props) => {
             .catch((e) => console.log(e));
     }
 
-    // const deleteImage = () => {
-    //     ImageService.deleteImage(currentImage.imageId)
-    //         .then(
-    //             props.history.push("/images")
-    //         )
-    //         .catch((e) => console.log(e))
-    // }
+    const deleteImage = () => {
+        ImageService.deleteImage(currentImage.imageId)
+            .then(
+                props.history.push("/images")
+            )
+            .catch((e) => console.log(e))
+    }
 
     const imageFullSize = (e) => {
         e.preventDefault();
@@ -76,13 +79,17 @@ const Image = (props) => {
                      onLoad={ () => setLoading(false) }
                      onClick={imageFullSize}
                 />
-                {/*<Button*/}
-                {/*    type="submit"*/}
-                {/*    className="admin-operation-button"*/}
-                {/*    onClick={deleteImage}*/}
-                {/*>*/}
-                {/*    Delete*/}
-                {/*</Button>*/}
+
+                {renderDelete &&
+                <div>
+                    <Button
+                        type="submit"
+                        className="admin-operation-button"
+                        onClick={deleteImage}
+                    >
+                        Delete image
+                    </Button>
+                </div>}
                 {currentUserId && currentImage.imageId ? (
                     <CommentAdd userId={currentUserId} imageId={currentImage.imageId}/>
                 ) : null
@@ -97,11 +104,6 @@ const Image = (props) => {
                             <h4 key={index}>#{hashtag.hashtagName}</h4>
                         )
                     )
-                }
-                {
-                    imageComments !== undefined ? (
-                        <label>Comments</label>
-                    ) : null
                 }
                 {
                     imageComments && imageComments.map((comment, index) =>

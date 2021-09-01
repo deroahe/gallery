@@ -37,7 +37,8 @@ const FrontPage = () => {
     return (
         <div className="frontPage">
             <ImageList images={images}/>
-            <FileUpload currentUserId={currentUserId} />
+            {currentUserId &&
+            <FileUpload currentUserId={currentUserId} />}
         </div>
     );
 }
