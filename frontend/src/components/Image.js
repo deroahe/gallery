@@ -38,11 +38,11 @@ const Image = (props) => {
 
     const retrieveCurrentUserId = () => {
         const user = AuthService.getCurrentUser(localStorage.getItem("user"));
-        if (user.roles.includes("ROLE_ADMIN")) {
-            setRenderDelete(true);
-        }
         if (user) {
             setCurrentUserId(user.id);
+            if (user.roles.includes("ROLE_ADMIN")) {
+                setRenderDelete(true);
+            }
         }
     }
 
